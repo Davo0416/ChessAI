@@ -21,6 +21,12 @@ namespace ChessAIWebAPI.Services
             _database = client.GetDatabase("ChessApp");
         }
 
+        public MongoService(IMongoCollection<User> users, IMongoCollection<Game> games)
+        {
+            Users = users;
+            Games = games;
+        }
+
         public IMongoCollection<User> Users =>
             _database.GetCollection<User>("Users");
 

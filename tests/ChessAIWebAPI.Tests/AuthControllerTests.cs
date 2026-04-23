@@ -14,8 +14,11 @@ public class AuthControllerTests
 
     public AuthControllerTests()
     {
-        _mongoMock = new Mock<MongoService>();
-        _controller = new AuthController(_mongoMock.Object);
+        var mockUsers = new Mock<IMongoCollection<User>>();
+        var mockGames = new Mock<IMongoCollection<Game>>();
+
+        _mongoMock = new MongoService(mockUsers.Object, mockGames.Object);
+        _controller = new AuthController(mongo);
     }
 
     [Fact]
