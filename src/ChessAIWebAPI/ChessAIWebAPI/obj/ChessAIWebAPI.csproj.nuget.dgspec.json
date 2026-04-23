@@ -54,6 +54,10 @@
               "target": "Package",
               "version": "[4.1.0, )"
             },
+            "Mongo2Go": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
             "MongoDB.Driver": {
               "target": "Package",
               "version": "[3.7.1, )"

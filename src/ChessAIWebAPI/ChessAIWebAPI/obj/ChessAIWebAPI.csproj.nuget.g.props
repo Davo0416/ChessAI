@@ -19,5 +19,6 @@
   </ImportGroup>
   <PropertyGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
     <PkgMicrosoft_Extensions_ApiDescription_Server Condition=" '$(PkgMicrosoft_Extensions_ApiDescription_Server)' == '' ">C:\Users\davog\.nuget\packages\microsoft.extensions.apidescription.server\6.0.5</PkgMicrosoft_Extensions_ApiDescription_Server>
+    <PkgMongo2Go Condition=" '$(PkgMongo2Go)' == '' ">C:\Users\davog\.nuget\packages\mongo2go\4.1.0</PkgMongo2Go>
   </PropertyGroup>
 </Project>
