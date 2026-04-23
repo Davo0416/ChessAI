@@ -1,0 +1,18 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Board colors -->
+    <Color x:Key="DarkSquareColor">#B58863</Color>
+    <Color x:Key="LightSquareColor">#F0D9B5</Color>
+
+    <!-- Highlights -->
+    <Color x:Key="EngineHighlightColor">#64FFB464</Color>
+    <Color x:Key="UserHighlightRed">#64FF0000</Color>
+    <Color x:Key="UserHighlightOrange">#96FF8000</Color>
+    <Color x:Key="UserHighlightBlue">#6400C8FF</Color>
+    <Color x:Key="UserHighlightGreen">#649BFF64</Color>
+
+    <!-- Arrows -->
+    <Color x:Key="ArrowColor">#96FF8000</Color>
+
+</ResourceDictionary>

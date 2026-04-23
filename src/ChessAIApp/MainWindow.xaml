@@ -1,0 +1,1427 @@
+﻿<Window x:Class="ChessAIApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChessAIApp"
+        mc:Ignorable="d"
+        Title="MainWindow"
+        WindowState="Maximized"
+        Height="450"
+        Width="800"
+        Background="#302E2B">
+
+    <Window.Resources>
+        <local:PercentToGridLengthConverter x:Key="PercentToGridLengthConverter"/>
+        <Style x:Key="RoundedButtonStyle"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="#3A3937"/>
+            <Setter Property="Foreground"
+                    Value="White"/>
+            <Setter Property="BorderBrush"
+                    Value="Transparent"/>
+            <Setter Property="Padding"
+                    Value="10,5"/>
+            <Setter Property="Margin"
+                    Value="10,5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#36FFFFFF"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#48FFFFFF"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Rounded Modern Button -->
+        <Style x:Key="RoundedCardButton"
+               TargetType="Button">
+            <Setter Property="Background"
+                    Value="#3A3937"/>
+            <Setter Property="Foreground"
+                    Value="White"/>
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="Margin"
+                    Value="10"/>
+            <Setter Property="Padding"
+                    Value="15"/>
+            <Setter Property="FocusVisualStyle"
+                    Value="{x:Null}"/>
+
+            <Setter Property="HorizontalContentAlignment"
+                    Value="Left"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsMouseOver"
+                                               Value="True"/>
+                                    <Condition Property="Tag"
+                                               Value="{x:Null}"/>
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#4A4947"/>
+                            </MultiTrigger>
+
+                            <Trigger Property="Tag"
+                                     Value="Selected">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="DimGray"/>
+                            </Trigger>
+
+                            <Trigger Property="IsPressed"
+                                     Value="True">
+                                <Setter TargetName="border"
+                                        Property="Background"
+                                        Value="#2A2927"/>
+                            </Trigger>
+
+                        </ControlTemplate.Triggers>
+
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <Grid x:Name="MenuView"
+            Visibility="Collapsed">
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="200">
+
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Height="50"
+                        Margin="0,10"
+                        Click="Play_Click">
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <Grid Width="24"
+                              Height="24"
+                              Margin="0,0,10,0"
+                              VerticalAlignment="Center">
+                            <Path Fill="White"
+                                  Stretch="Uniform"
+                                  Data="M19 22H5V20H19V22M16 18H8L10.18 10H8V8H10.72L10.79 7.74C10.1 7.44 9.55 6.89 9.25 6.2C8.58 4.68 9.27 2.91 10.79 2.25C12.31 1.58 14.08 2.27 14.74 3.79C15.41 5.31 14.72 7.07 13.2 7.74L13.27 8H16V10H13.82L16 18Z"/>
+                        </Grid>
+
+                        <TextBlock Text="Play"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Height="50"
+                        Margin="0,10"
+                        Click="Profile_Click">
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+
+                        <Grid Width="24"
+                              Height="24"
+                              Margin="0,0,10,0">
+                            <Path Fill="White"
+                                  Data="M12,12A5,5 0 1,0 12,2A5,5 0 0,0 12,12M12,14C7.58,14 4,17.58 4,22H20C20,17.58 16.42,14 12,14Z"/>
+                        </Grid>
+
+                        <TextBlock Text="Profile"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Height="50"
+                        Margin="0,10"
+                        Click="Logout_Click">
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <Grid Width="24"
+                              Height="24"
+                              Margin="0,0,10,0"
+                              VerticalAlignment="Center">
+                            <Path Fill="White"
+                                  Stretch="Uniform"
+                                  Data="M17 7L15.59 8.41L18.17 11H8V13H18.17L15.59 15.58L17 17L22 12M4 5H12V3H4C2.9 3 2 3.9 2 5V19C2 20.1 2.9 21 4 21H12V19H4V5Z"/>
+                        </Grid>
+
+                        <TextBlock Text="Log Out"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+
+                    </StackPanel>
+                </Button>
+
+                <Button Style="{StaticResource RoundedButtonStyle}"
+                        Height="50"
+                        Margin="0,10"
+                        Click="Quit_Click">
+
+                    <StackPanel Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                        <Grid Width="24"
+                              Height="24"
+                              Margin="0,0,10,0"
+                              VerticalAlignment="Center">
+                            <Path Fill="White"
+                                  Stretch="Uniform"
+                                  Data="M13.34,8.17C12.41,8.17 11.65,7.4 11.65,6.47A1.69,1.69 0 0,1 13.34,4.78C14.28,4.78 15.04,5.54 15.04,6.47C15.04,7.4 14.28,8.17 13.34,8.17M10.3,19.93L4.37,18.75L4.71,17.05L8.86,17.9L10.21,11.04L8.69,11.64V14.5H7V10.54L11.4,8.67L12.07,8.59C12.67,8.59 13.17,8.93 13.5,9.44L14.36,10.79C15.04,12 16.39,12.82 18,12.82V14.5C16.14,14.5 14.44,13.67 13.34,12.4L12.84,14.94L14.61,16.63V23H12.92V17.9L11.14,16.21L10.3,19.93M21,23H19V3H6V16.11L4,15.69V1H21V23M6,23H4V19.78L6,20.2V23Z"/>
+                        </Grid>
+
+                        <TextBlock Text="Quit"
+                                   FontSize="26"
+                                   FontWeight="Bold"
+                                   VerticalAlignment="Center"/>
+
+                    </StackPanel>
+                </Button>
+
+            </StackPanel>
+        </Grid>
+        <!-- ===== BOT SELECTION VIEW ===== -->
+        <Grid x:Name="BotSelectView"
+              Visibility="Collapsed">
+
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="600">
+
+                <!-- Title -->
+                <TextBlock Text="Select Opponent"
+                           FontSize="32"
+                           FontWeight="Bold"
+                           Margin="0,0,0,16"
+                           HorizontalAlignment="Center"
+                           Foreground="White"/>
+
+                <!-- BOT CARDS -->
+                <UniformGrid Columns="3"
+                             HorizontalAlignment="Center"
+                             Margin="0,0,0,16">
+
+                    <Button x:Name="EasyBotBtn"
+                            HorizontalContentAlignment="Center"
+                            Style="{StaticResource RoundedCardButton}"
+                            Width="150"
+                            Height="150"
+                            Click="SelectBot_Click">
+                        <StackPanel HorizontalAlignment="Center"
+                                    VerticalAlignment="Center">
+
+                            <Viewbox Stretch="Uniform"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Width="50"
+                                     Height="50">
+                                <Path Fill="White"
+                                      Data="M19.78,3H11.22C10.55,3 10,3.55 10,4.22V8H16V14H19.78C20.45,14 21,13.45 21,12.78V4.22C21,3.55 20.45,3 19.78,3M12.44,6.67C11.76,6.67 11.21,6.12 11.21,5.44C11.21,4.76 11.76,4.21 12.44,4.21A1.23,1.23 0 0,1 13.67,5.44C13.67,6.12 13.12,6.67 12.44,6.67M18.56,12.78C17.88,12.79 17.33,12.24 17.32,11.56C17.31,10.88 17.86,10.33 18.54,10.32C19.22,10.31 19.77,10.86 19.78,11.56C19.77,12.23 19.23,12.77 18.56,12.78M18.56,6.67C17.88,6.68 17.33,6.13 17.32,5.45C17.31,4.77 17.86,4.22 18.54,4.21C19.22,4.2 19.77,4.75 19.78,5.44C19.78,6.12 19.24,6.66 18.56,6.67M4.22,10H12.78A1.22,1.22 0 0,1 14,11.22V19.78C14,20.45 13.45,21 12.78,21H4.22C3.55,21 3,20.45 3,19.78V11.22C3,10.55 3.55,10 4.22,10M8.5,14.28C7.83,14.28 7.28,14.83 7.28,15.5C7.28,16.17 7.83,16.72 8.5,16.72C9.17,16.72 9.72,16.17 9.72,15.5A1.22,1.22 0 0,0 8.5,14.28M5.44,11.22C4.77,11.22 4.22,11.77 4.22,12.44A1.22,1.22 0 0,0 5.44,13.66C6.11,13.66 6.66,13.11 6.66,12.44V12.44C6.66,11.77 6.11,11.22 5.44,11.22M11.55,17.33C10.88,17.33 10.33,17.88 10.33,18.55C10.33,19.22 10.88,19.77 11.55,19.77A1.22,1.22 0 0,0 12.77,18.55H12.77C12.77,17.88 12.23,17.34 11.56,17.33H11.55Z"/>
+                            </Viewbox>
+
+                            <TextBlock Text="Random Bot"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Margin="0,8,0,0"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+
+                    <Button x:Name="MediumBotBtn"
+                            HorizontalContentAlignment="Center"
+                            Style="{StaticResource RoundedCardButton}"
+                            Width="150"
+                            Height="150"
+                            Click="SelectBot_Click">
+
+                        <StackPanel HorizontalAlignment="Center">
+                            <Viewbox Stretch="Uniform"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Width="50"
+                                     Height="50">
+                                <Path Fill="White"
+                                      Data="M22 14H21C21 10.13 17.87 7 14 7H13V5.73C13.6 5.39 14 4.74 14 4C14 2.9 13.11 2 12 2S10 2.9 10 4C10 4.74 10.4 5.39 11 5.73V7H10C6.13 7 3 10.13 3 14H2C1.45 14 1 14.45 1 15V18C1 18.55 1.45 19 2 19H3V20C3 21.11 3.9 22 5 22H19C20.11 22 21 21.11 21 20V19H22C22.55 19 23 18.55 23 18V15C23 14.45 22.55 14 22 14M9.79 16.5C9.4 15.62 8.53 15 7.5 15S5.6 15.62 5.21 16.5C5.08 16.19 5 15.86 5 15.5C5 14.12 6.12 13 7.5 13S10 14.12 10 15.5C10 15.86 9.92 16.19 9.79 16.5M18.79 16.5C18.4 15.62 17.5 15 16.5 15S14.6 15.62 14.21 16.5C14.08 16.19 14 15.86 14 15.5C14 14.12 15.12 13 16.5 13S19 14.12 19 15.5C19 15.86 18.92 16.19 18.79 16.5Z"/>
+                            </Viewbox>
+
+                            <TextBlock Text="Easy Bot"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Margin="0,8,0,0"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                    </Button>
+
+                    <Button x:Name="HardBotBtn"
+                            HorizontalContentAlignment="Center"
+                            Style="{StaticResource RoundedCardButton}"
+                            Width="150"
+                            Height="150"
+                            Click="SelectBot_Click">
+
+                        <StackPanel HorizontalAlignment="Center">
+                            <Viewbox Stretch="Uniform"
+                                     HorizontalAlignment="Center"
+                                     VerticalAlignment="Center"
+                                     Width="50"
+                                     Height="50">
+                                <Path Fill="White"
+                                      Data="M22 14H21C21 10.13 17.87 7 14 7H13V5.73C13.6 5.39 14 4.74 14 4C14 2.9 13.11 2 12 2S10 2.9 10 4C10 4.74 10.4 5.39 11 5.73V7H10C6.13 7 3 10.13 3 14H2C1.45 14 1 14.45 1 15V18C1 18.55 1.45 19 2 19H3V20C3 21.11 3.9 22 5 22H19C20.11 22 21 21.11 21 20V19H22C22.55 19 23 18.55 23 18V15C23 14.45 22.55 14 22 14M7.5 18C6.12 18 5 16.88 5 15.5C5 14.68 5.4 13.96 6 13.5L9.83 16.38C9.5 17.32 8.57 18 7.5 18M16.5 18C15.43 18 14.5 17.32 14.17 16.38L18 13.5C18.6 13.96 19 14.68 19 15.5C19 16.88 17.88 18 16.5 18Z"/>
+                            </Viewbox>
+
+                            <TextBlock Text="Hard Bot"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Margin="0,8,0,0"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+
+                    </Button>
+
+                </UniformGrid>
+
+                <!-- Color Selection -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,16">
+
+                    <TextBlock Text="Color"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                    <RadioButton Content="White"
+                                 GroupName="ColorGroup"
+                                 Margin="15,0"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"
+                                 Checked="Color_Checked"/>
+
+                    <RadioButton Content="Black"
+                                 GroupName="ColorGroup"
+                                 Margin="15,0"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"
+                                 Checked="Color_Checked"/>
+
+                    <RadioButton Content="Random"
+                                 GroupName="ColorGroup"
+                                 Margin="15,0"
+                                 IsChecked="True"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"
+                                 Checked="Color_Checked"/>
+
+                </StackPanel>
+
+                <!-- Difficulty -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center">
+
+                    <TextBlock Text="Difficulty"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="White"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+
+                    <RadioButton Content="Easy"
+                                 GroupName="DifficultyGroup"
+                                 Margin="15,0"
+                                 IsChecked="True"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"
+                                 Checked="Difficulty_Checked"/>
+
+                    <RadioButton Content="Hard"
+                                 GroupName="DifficultyGroup"
+                                 Margin="15,0"
+                                 Foreground="White"
+                                 VerticalAlignment="Center"
+                                 Checked="Difficulty_Checked"/>
+
+                </StackPanel>
+
+                <!-- Play Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,16">
+                    <Button Content="Play"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Style="{StaticResource RoundedCardButton}"
+                            Width="160"
+                            Height="50"
+                            Click="StartGame_Click"
+                            HorizontalContentAlignment="Center"/>
+
+                    <Button Content="Back"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Style="{StaticResource RoundedCardButton}"
+                            Width="160"
+                            Height="50"
+                            Click="BackToMenu_Click"
+                            HorizontalContentAlignment="Center"/>
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <Grid x:Name="GameView"
+              Visibility="Collapsed">
+            <Grid>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Viewbox Grid.Column="0"
+                             Stretch="Uniform"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             Margin="20">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
+                                <UniformGrid x:Name="ChessBoardGrid"
+                                             Rows="8"
+                                             Columns="8"
+                                             Width="600"
+                                             Height="600"/>
+                                <Canvas x:Name="DragLayer"
+                                        IsHitTestVisible="False"/>
+                                <Canvas x:Name="ArrowLayer"
+                                        IsHitTestVisible="False"/>
+                                <Canvas x:Name="PromotionLayer"
+                                        Width="600"
+                                        Height="600"
+                                        IsHitTestVisible="True"/>
+                            </Grid>
+                            <Grid Grid.Column="1">
+                                <Button x:Name="SettingsButton"
+                                        Width="32"
+                                        Height="32"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Top"
+                                        Margin="5"
+                                        Click="SettingsButton_Click"
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        Cursor="Hand">
+                                    <Grid Width="24"
+                                          Height="24"
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center">
+                                        <Path Fill="White"
+                                              Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                                    </Grid>
+                                </Button>
+                                <Popup x:Name="SettingsPopup"
+                                       PlacementTarget="{Binding ElementName=SettingsButton}"
+                                       Placement="Bottom"
+                                       StaysOpen="False">
+
+                                    <Border Background="#333"
+                                            Padding="10"
+                                            CornerRadius="6">
+
+                                        <StackPanel Width="200">
+
+                                            <TextBlock Text="Piece Set"
+                                                       Foreground="White"
+                                                       FontWeight="Bold"/>
+
+                                            <ComboBox x:Name="PieceSetCombo"
+                                                      Margin="0,5,0,10"
+                                                      SelectionChanged="PieceSetCombo_SelectionChanged"/>
+
+                                            <TextBlock Text="Theme"
+                                                       Foreground="White"
+                                                       FontWeight="Bold"/>
+
+                                            <ComboBox x:Name="ThemeCombo"
+                                                      Margin="0,5,0,10"
+                                                      SelectionChanged="ThemeCombo_SelectionChanged"/>
+
+                                        </StackPanel>
+
+                                    </Border>
+
+                                </Popup>
+                            </Grid>
+                        </Grid>
+                    </Viewbox>
+                    <Grid Grid.Column="1"
+                          Margin="20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- Moves Table -->
+                        <DataGrid Grid.Row="0"
+                                  x:Name="MovesTable"
+                                  VerticalAlignment="Stretch"
+                                  HorizontalAlignment="Stretch"
+                                  CanUserSortColumns="False"
+                                  AutoGenerateColumns="False"
+                                  CanUserAddRows="False"
+                                  HeadersVisibility="Column"
+                                  IsReadOnly="True"
+                                  IsHitTestVisible="True"
+                                  GridLinesVisibility="None"
+                                  Background="#262522"
+                                  RowBackground="#262522"
+                                  AlternatingRowBackground="#2A2926"
+                                  AlternationCount="2"
+                                  Focusable="False"
+                                  BorderThickness="0"
+                                  BorderBrush="Transparent">
+
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="White"
+                                                        Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding White}"
+                                                    FocusVisualStyle="{x:Null}"
+                                                    Padding="0"
+                                                    Foreground="#C3C2C1"
+                                                    BorderThickness="0"
+                                                    Cursor="Hand"
+                                                    Click="MoveCell_Click">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border x:Name="border"
+                                                                            Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                                          VerticalAlignment="Center"/>
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver"
+                                                                                 Value="True">
+                                                                            <Setter TargetName="border"
+                                                                                    Property="Background"
+                                                                                    Value="#12FFFFFF"/>
+                                                                        </Trigger>
+
+                                                                        <Trigger Property="IsPressed"
+                                                                                 Value="True">
+                                                                            <Setter TargetName="border"
+                                                                                    Property="Background"
+                                                                                    Value="#24FFFFFF"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.HeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Center"/>
+                                            <Setter Property="Background"
+                                                    Value="#21201D"/>
+                                            <Setter Property="Foreground"
+                                                    Value="#C3C2C1"/>
+                                            <Setter Property="BorderBrush"
+                                                    Value="Transparent"/>
+                                            <Setter Property="BorderThickness"
+                                                    Value="0"/>
+                                        </Style>
+                                    </DataGridTemplateColumn.HeaderStyle>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="Black"
+                                                        Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Content="{Binding Black}"
+                                                    FocusVisualStyle="{x:Null}"
+                                                    Padding="0"
+                                                    Foreground="#C3C2C1"
+                                                    BorderThickness="0"
+                                                    Cursor="Hand"
+                                                    Click="MoveCell_Click">
+
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Background"
+                                                                Value="Transparent"/>
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border x:Name="border"
+                                                                            Background="{TemplateBinding Background}">
+                                                                        <ContentPresenter HorizontalAlignment="Center"
+                                                                                          VerticalAlignment="Center"/>
+                                                                    </Border>
+
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver"
+                                                                                 Value="True">
+                                                                            <Setter TargetName="border"
+                                                                                    Property="Background"
+                                                                                    Value="#12FFFFFF"/>
+                                                                        </Trigger>
+
+                                                                        <Trigger Property="IsPressed"
+                                                                                 Value="True">
+                                                                            <Setter TargetName="border"
+                                                                                    Property="Background"
+                                                                                    Value="#24FFFFFF"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                    <DataGridTemplateColumn.HeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="HorizontalContentAlignment"
+                                                    Value="Center"/>
+                                            <Setter Property="Background"
+                                                    Value="#21201D"/>
+                                            <Setter Property="Foreground"
+                                                    Value="#C3C2C1"/>
+                                            <Setter Property="BorderBrush"
+                                                    Value="Transparent"/>
+                                            <Setter Property="BorderThickness"
+                                                    Value="0"/>
+                                            <Setter Property="Padding"
+                                                    Value="10"/>
+                                        </Style>
+                                    </DataGridTemplateColumn.HeaderStyle>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow">
+                                    <Setter Property="BorderThickness"
+                                            Value="0"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected"
+                                                 Value="True">
+                                            <Setter Property="Background"
+                                                    Value="Transparent"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.RowStyle>
+
+                            <DataGrid.Resources>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                                                 Color="Transparent"/>
+                                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}"
+                                                 Color="Black"/>
+                            </DataGrid.Resources>
+
+                        </DataGrid>
+
+                        <!-- 5 Equal Buttons Under It -->
+                        <UniformGrid Grid.Row="1"
+                                     Columns="4"
+                                     Margin="0"
+                                     Background="#21201D">
+
+                            <Button Click="FullyUndo_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M18.41,16.59L13.82,12L18.41,7.41L17,6L11,12L17,18L18.41,16.59M6,6H8V18H6V6Z"/>
+                                </Grid>
+                            </Button>
+                            <Button Click="Undo_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z"/>
+                                </Grid>
+                            </Button>
+                            <Button Click="Redo_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                                </Grid>
+                            </Button>
+                            <Button Click="FullyRedo_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M5.59,7.41L10.18,12L5.59,16.59L7,18L13,12L7,6L5.59,7.41M16,6H18V18H16V6Z"/>
+                                </Grid>
+                            </Button>
+                        </UniformGrid>
+                        <UniformGrid x:Name="BottomControls"
+                                     Grid.Row="2"
+                                     Columns="2"
+                                     Margin="0"
+                                     Background="#21201D">
+                            <Button Click="UndoMove_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M13.5 21H6V17H13.5C15.43 17 17 15.43 17 13.5S15.43 10 13.5 10H11V14L4 8L11 2V6H13.5C17.64 6 21 9.36 21 13.5S17.64 21 13.5 21Z"/>
+                                </Grid>
+                            </Button>
+                            <Button Click="Hint_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M12,6A6,6 0 0,1 18,12C18,14.22 16.79,16.16 15,17.2V19A1,1 0 0,1 14,20H10A1,1 0 0,1 9,19V17.2C7.21,16.16 6,14.22 6,12A6,6 0 0,1 12,6M14,21V22A1,1 0 0,1 13,23H11A1,1 0 0,1 10,22V21H14M20,11H23V13H20V11M1,11H4V13H1V11M13,1V4H11V1H13M4.92,3.5L7.05,5.64L5.63,7.05L3.5,4.93L4.92,3.5M16.95,5.63L19.07,3.5L20.5,4.93L18.37,7.05L16.95,5.63Z"/>
+                                </Grid>
+                            </Button>
+                        </UniformGrid>
+                        <UniformGrid x:Name="ResignControl"
+                                     Grid.Row="3"
+                                     Columns="1"
+                                     Margin="0"
+                                     Background="#21201D">
+                            <Button Click="Resign_Click"
+                                    Style="{StaticResource RoundedButtonStyle}">
+                                <Grid Width="24"
+                                      Height="24"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                                    <Path Fill="White"
+                                          Data="M14.4,6L14,4H5V21H7V14H12.6L13,16H20V6H14.4Z"/>
+                                </Grid>
+                            </Button>
+                        </UniformGrid>
+                        <UniformGrid Grid.Row="4"
+                                     Columns="1"
+                                     Background="#21201D">
+
+                            <Button x:Name="BackButton"
+                                    Content="Back"
+                                    Click="BackToProfile_Click"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Visibility="Collapsed"/>
+                        </UniformGrid>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Grid x:Name="ResignDialog"
+                  Visibility="Collapsed"
+                  Background="#88000000">
+
+                <Border Background="#21201D"
+                        CornerRadius="12"
+                        Padding="20"
+                        Width="320"
+                        Height="180"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+
+                    <StackPanel VerticalAlignment="Center">
+
+                        <TextBlock Text="Are you sure you want to resign?"
+                                   Foreground="White"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   TextAlignment="Center"
+                                   Margin="0,0,0,20"/>
+
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+
+                            <Button Content="Cancel"
+                                    Width="100"
+                                    Height="35"
+                                    Margin="5"
+                                    Click="CancelResign_Click"
+                                    Style="{StaticResource RoundedButtonStyle}"/>
+
+                            <Button Content="Resign"
+                                    Width="100"
+                                    Height="35"
+                                    Margin="5"
+                                    Click="ConfirmResign_Click"
+                                    Style="{StaticResource RoundedButtonStyle}"/>
+
+                        </StackPanel>
+
+                    </StackPanel>
+
+                </Border>
+
+            </Grid>
+            <Grid x:Name="ResultScreen"
+                  Visibility="Collapsed"
+                  Background="#88000000">
+
+                <Border Background="#21201D"
+                        CornerRadius="12"
+                        Padding="25"
+                        Width="350"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="20"
+                                          ShadowDepth="0"
+                                          Opacity="0.6"/>
+                    </Border.Effect>
+
+                    <StackPanel>
+
+                        <!-- Winner text -->
+                        <TextBlock x:Name="WinnerText"
+                                   Text="White Wins"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   HorizontalAlignment="Center"/>
+
+                        <!-- Result type -->
+                        <TextBlock x:Name="ResultReasonText"
+                                   Text="by resignation"
+                                   FontSize="16"
+                                   Foreground="#C3C2C1"
+                                   Margin="0,5,0,20"
+                                   HorizontalAlignment="Center"/>
+
+                        <!-- Buttons -->
+                        <StackPanel Orientation="Horizontal"
+                                    HorizontalAlignment="Center">
+
+                            <Button Content="Rematch"
+                                    Width="120"
+                                    Height="40"
+                                    Margin="5"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Click="Rematch_Click"/>
+
+                            <Button Content="Menu"
+                                    Width="120"
+                                    Height="40"
+                                    Margin="5"
+                                    Style="{StaticResource RoundedButtonStyle}"
+                                    Click="MenuFromResult_Click"/>
+
+                        </StackPanel>
+
+                    </StackPanel>
+
+                </Border>
+            </Grid>
+        </Grid>
+        <Grid x:Name="ProfileView"
+              Visibility="Collapsed">
+
+            <Grid Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="1"
+                        Background="#3A3937"
+                        CornerRadius="12"
+                        Padding="15"
+                        Margin="0,50">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Profile Picture -->
+                        <Border Grid.Column="0"
+                            Width="150"
+                            Height="150"
+                            Margin="0,0,15,0"
+                            CornerRadius="8"
+                            ClipToBounds="True">
+                            <Image Source="{Binding ProfilePicture}"
+                                Stretch="UniformToFill"/>
+                        </Border>
+
+                        <!-- Username -->
+                        <TextBlock Grid.Column="1"
+                                   Text="{Binding Username}"
+                                   FontSize="20"
+                                   FontWeight="Bold"
+                                   Foreground="White"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,10,0"/>
+
+                        <!-- Flag -->
+                        <Image Grid.Column="2"
+                               Width="32"
+                               Height="20"
+                               Source="{Binding FlagImage}"
+                               VerticalAlignment="Center"/>
+
+                        <!-- RIGHT SIDE STATS -->
+                        <StackPanel Grid.Column="4"
+                                    Orientation="Vertical"
+                                    VerticalAlignment="Center"
+                                    Margin="20,0,100,0">
+
+                            <Grid Height="20"
+                                  Width="400">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="{Binding WinPercent, Converter={StaticResource PercentToGridLengthConverter}}"/>
+                                    <ColumnDefinition Width="{Binding DrawPercent, Converter={StaticResource PercentToGridLengthConverter}}"/>
+                                    <ColumnDefinition Width="{Binding LossPercent, Converter={StaticResource PercentToGridLengthConverter}}"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border Grid.Column="0"
+                                        Background="LimeGreen"
+                                        CornerRadius="{Binding WinCorner}"/>
+                                <Border Grid.Column="1"
+                                        Background="#C3C2C1"
+                                        CornerRadius="{Binding DrawCorner}"/>
+                                <Border Grid.Column="2"
+                                        Background="IndianRed"
+                                        CornerRadius="{Binding LossCorner}"/>
+                            </Grid>
+
+                            <StackPanel Orientation="Horizontal"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="{Binding Wins, StringFormat='Wins: {0}'}"
+                                           Foreground="LimeGreen"
+                                           Margin="10,0"/>
+                                <TextBlock Text="{Binding Draws, StringFormat='Draws: {0}'}"
+                                           Foreground="#C3C2C1"
+                                           Margin="10,0"/>
+                                <TextBlock Text="{Binding Losses, StringFormat='Losses: {0}'}"
+                                           Foreground="IndianRed"
+                                           Margin="10,0"/>
+                            </StackPanel>
+
+                        </StackPanel>
+
+                    </Grid>
+                </Border>
+                <!-- GAME LIST -->
+                <Grid Grid.Row="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <!-- Game list -->
+                        <ColumnDefinition Width="1*"/>
+                        <!-- Stats panel -->
+                    </Grid.ColumnDefinitions>
+                    <ScrollViewer Grid.Column="0">
+                        <ItemsControl x:Name="GamesList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#3A3937"
+                                            CornerRadius="10"
+                                            Margin="10"
+                                            Padding="12"
+                                            BorderThickness="3"
+                                            BorderBrush="{Binding BorderColor}"
+                                            MouseLeftButtonDown="Game_Click">
+
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <!-- Players -->
+                                                <ColumnDefinition Width="Auto"/>
+                                                <!-- +/-/= -->
+                                                <ColumnDefinition Width="*"/>
+                                                <!-- Difficulty -->
+                                                <ColumnDefinition Width="Auto"/>
+                                                <!-- Moves -->
+                                                <ColumnDefinition Width="Auto"/>
+                                                <!-- Date -->
+                                            </Grid.ColumnDefinitions>
+
+                                            <!-- LEFT: Players + Scores -->
+                                            <Grid Grid.Column="0">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- YOU -->
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="0"
+                                                           Text="You"
+                                                           Foreground="White"
+                                                           FontWeight="Bold"/>
+
+                                                <TextBlock Grid.Row="0"
+                                                           Grid.Column="1"
+                                                           Text="{Binding PlayerScore}"
+                                                           Foreground="White"
+                                                           Margin="10,0,0,0"/>
+
+                                                <!-- BOT -->
+                                                <TextBlock Grid.Row="1"
+                                                           Grid.Column="0"
+                                                           Text="{Binding Opponent}"
+                                                           Foreground="#C3C2C1"/>
+
+                                                <TextBlock Grid.Row="1"
+                                                           Grid.Column="1"
+                                                           Text="{Binding OpponentScore}"
+                                                           Foreground="#C3C2C1"
+                                                           Margin="10,0,0,0"/>
+                                            </Grid>
+                                            <Grid Grid.Column="1"
+                                                  Width="12"
+                                                  Height="12"
+                                                  Margin="10,0,10,0"
+                                                  VerticalAlignment="Center">
+                                                <Path Fill="{Binding BorderColor}"
+                                                      Stretch="Uniform"
+                                                      Data="{Binding ResultSymbol}"/>
+                                            </Grid>
+
+                                            <!-- DIFFICULTY -->
+                                            <TextBlock Grid.Column="2"
+                                                       Text="{Binding Difficulty}"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="#C3C2C1"
+                                                       Margin="20,0"/>
+
+                                            <!-- MOVES -->
+                                            <TextBlock Grid.Column="3"
+                                                       Text="{Binding MoveCount, StringFormat='Moves: {0}'}"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="#C3C2C1"
+                                                       Margin="20,0"/>
+
+                                            <!-- DATE -->
+                                            <TextBlock Grid.Column="4"
+                                                       Text="{Binding Date}"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="#C3C2C1"
+                                                       Margin="20,0,0,0"/>
+                                        </Grid>
+
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+                    </ScrollViewer>
+                    <Border Grid.Column="1"
+                            Background="#3A3937"
+                            CornerRadius="12"
+                            Padding="15"
+                            Margin="10">
+
+                        <StackPanel>
+
+                            <TextBlock Text="Game Stats"
+                                       FontSize="20"
+                                       FontWeight="Bold"
+                                       Foreground="White"
+                                       Margin="0,0,0,15"/>
+
+                            <!-- 2 x 4 STAT GRID -->
+                            <UniformGrid Rows="4"
+                                         Columns="2">
+
+                                <!-- TILE 1 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Moves"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding MovesPlayedCount}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M19 22H5V20H19V22M16 18H8L10.18 10H8V8H10.72L10.79 7.74C10.1 7.44 9.55 6.89 9.25 6.2C8.58 4.68 9.27 2.91 10.79 2.25C12.31 1.58 14.08 2.27 14.74 3.79C15.41 5.31 14.72 7.07 13.2 7.74L13.27 8H16V10H13.82L16 18Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 2 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Captures"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding CaptureCount}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M19,22H5V20H19V22M17.16,8.26C18.22,9.63 18.86,11.28 19,13C19,15.76 15.87,18 12,18C8.13,18 5,15.76 5,13C5,10.62 7.33,6.39 10.46,5.27C10.16,4.91 10,4.46 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.46 13.84,4.91 13.54,5.27C14.4,5.6 15.18,6.1 15.84,6.74L11.29,11.29L12.71,12.71L17.16,8.26Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 3 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Checks"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding CheckCount}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M19,22H5V20H19V22M13,2V2C11.75,2 10.58,2.62 9.89,3.66L7,8L9,10L11.06,8.63C11.5,8.32 12.14,8.44 12.45,8.9C12.47,8.93 12.5,8.96 12.5,9V9C12.8,9.59 12.69,10.3 12.22,10.77L7.42,15.57C6.87,16.13 6.87,17.03 7.43,17.58C7.69,17.84 8.05,18 8.42,18H17V6A4,4 0 0,0 13,2Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 4 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Stalemates"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding StalemateCount}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M17,16V14H7V16H17M19,3A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5C3,3.89 3.89,3 5,3H19M17,10V8H7V10H17Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 5 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Castles"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding CastleCount}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M19,22H5V20H19V22M17,10C15.58,10 14.26,10.77 13.55,12H13V7H16V5H13V2H11V5H8V7H11V12H10.45C9.35,10.09 6.9,9.43 5,10.54C3.07,11.64 2.42,14.09 3.5,16C4.24,17.24 5.57,18 7,18H17A4,4 0 0,0 21,14A4,4 0 0,0 17,10Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 6 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Promotions"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding PromotionCount}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M18,3A2,2 0 0,1 20,5C20,5.81 19.5,6.5 18.83,6.82L17,13.15V18H7V13.15L5.17,6.82C4.5,6.5 4,5.81 4,5A2,2 0 0,1 6,3A2,2 0 0,1 8,5C8,5.5 7.82,5.95 7.5,6.3L10.3,9.35L10.83,5.62C10.33,5.26 10,4.67 10,4A2,2 0 0,1 12,2A2,2 0 0,1 14,4C14,4.67 13.67,5.26 13.17,5.62L13.7,9.35L16.47,6.29C16.18,5.94 16,5.5 16,5A2,2 0 0,1 18,3M5,20H19V22H5V20Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 7 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Favourite White Opener"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding WhiteOpener}"
+                                                       FontSize="16"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M12,7.09L14.45,8.58L13.8,5.77L16,3.89L13.11,3.64L12,1L10.87,3.64L8,3.89L10.18,5.77L9.5,8.58L12,7.09M15,23H9V10H15V23M1,17V23H7V17H1M5,21H3V19H5V21M17,13V23H23V13H17M21,21H19V15H21V21Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                                <!-- TILE 8 -->
+                                <Border Background="#2F2E2B"
+                                        CornerRadius="10"
+                                        Margin="5"
+                                        Padding="10">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel>
+                                            <TextBlock Text="Favourite Black Opener"
+                                                       Foreground="#C3C2C1"/>
+                                            <TextBlock Text="{Binding BlackOpener}"
+                                                       FontSize="18"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </StackPanel>
+
+                                        <Viewbox Grid.Column="1"
+                                                 Width="24"
+                                                 Height="24"
+                                                 VerticalAlignment="Center">
+                                            <Path Fill="White"
+                                                  Data="M12,7.09L14.45,8.58L13.8,5.77L16,3.89L13.11,3.64L12,1L10.87,3.64L8,3.89L10.18,5.77L9.5,8.58L12,7.09M15,23H9V10H15V23M1,17V23H7V17H1M5,21H3V19H5V21M17,13V23H23V13H17M21,21H19V15H21V21Z"/>
+                                        </Viewbox>
+                                    </Grid>
+                                </Border>
+
+                            </UniformGrid>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                <!-- BACK BUTTON -->
+                <Button Grid.Row="4"
+                        Content="Back"
+                        Width="150"
+                        Height="40"
+                        HorizontalAlignment="Center"
+                        Margin="10"
+                        Style="{StaticResource RoundedButtonStyle}"
+                        Click="BackFromProfile_Click"/>
+
+            </Grid>
+        </Grid>
+        <Grid x:Name="AuthView"
+              Visibility="Visible">
+
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                        Width="400">
+
+                <TextBlock Text="ChessAI Login"
+                           FontSize="32"
+                           FontWeight="Bold"
+                           Margin="0,0,0,20"
+                           Foreground="White"
+                           HorizontalAlignment="Center"/>
+
+                <!-- Username -->
+                <TextBox x:Name="UsernameBox"
+                         Height="40"
+                         Margin="0,8"
+                         FontSize="16"/>
+
+                <!-- Password -->
+                <PasswordBox x:Name="PasswordBox"
+                             Height="40"
+                             Margin="0,8"
+                             FontSize="16"/>
+
+                <!-- Buttons -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,16">
+
+                    <Button Content="Login"
+                            Width="150"
+                            Height="50"
+                            Margin="5"
+                            Style="{StaticResource RoundedCardButton}"
+                            Click="Login_Click"/>
+
+                    <Button Content="Signup"
+                            Width="150"
+                            Height="50"
+                            Margin="5"
+                            Style="{StaticResource RoundedCardButton}"
+                            Click="Signup_Click"/>
+                </StackPanel>
+
+                <TextBlock x:Name="AuthStatus"
+                           Foreground="Red"
+                           HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

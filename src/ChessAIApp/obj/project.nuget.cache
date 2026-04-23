@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "f6u+5r8muR8=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\davog\\ChessAIApp\\ChessAIApp.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\davog\\.nuget\\packages\\chessdotnet\\1.0.0\\chessdotnet.1.0.0.nupkg.sha512",
+    "C:\\Users\\davog\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\davog\\.nuget\\packages\\netstandard.library\\1.6.1\\netstandard.library.1.6.1.nupkg.sha512",
+    "C:\\Users\\davog\\.nuget\\packages\\newtonsoft.json\\13.0.4\\newtonsoft.json.13.0.4.nupkg.sha512",
+    "C:\\Users\\davog\\.nuget\\packages\\sharpvectors.wpf\\1.8.5\\sharpvectors.wpf.1.8.5.nupkg.sha512"
+  ],
+  "logs": []
+}

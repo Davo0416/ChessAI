@@ -1,0 +1,161 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\controllers\\gamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\controllers\\gamecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\services\\mongoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\services\\mongoservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\models\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\models\\game.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\chessaiwebapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\chessaiwebapi.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|c:\\users\\davog\\onedrive\\desktop\\chessaiwebapi\\chessaiwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2DFB3C18-6807-4624-92F7-03A34381B8EC}|ChessAIWebAPI\\ChessAIWebAPI.csproj|solutionrelative:chessaiwebapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 10,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:310687613:0:{83107a3e-496a-485e-b455-16ddb978e55e}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{bdada759-5db7-402f-96e3-402b17c8c5b4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:681529699:0:{83107a3e-496a-485e-b455-16ddb978e55e}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\appsettings.json",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\appsettings.json",
+              "RelativeToolTip": "ChessAIWebAPI\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-04-21T09:45:00.427Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Program.cs",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\Program.cs",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Program.cs",
+              "RelativeToolTip": "ChessAIWebAPI\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T11:49:41.532Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GameController.cs",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Controllers\\GameController.cs",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\Controllers\\GameController.cs",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Controllers\\GameController.cs",
+              "RelativeToolTip": "ChessAIWebAPI\\Controllers\\GameController.cs",
+              "ViewState": "AgIAAA4AAAAAAAAAAAAkwBUAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T11:42:11.599Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\Controllers\\AuthController.cs",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "ChessAIWebAPI\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAACYAAAAAAAAAAADwvzYAAAAaAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T11:40:22.59Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MongoService.cs",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Services\\MongoService.cs",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\Services\\MongoService.cs",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Services\\MongoService.cs",
+              "RelativeToolTip": "ChessAIWebAPI\\Services\\MongoService.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAAABIAAAA7AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T11:37:53.13Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ChessAIWebAPI.csproj",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\ChessAIWebAPI.csproj",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
+              "RelativeToolTip": "ChessAIWebAPI\\ChessAIWebAPI.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-04-20T11:37:25.028Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Game.cs",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Models\\Game.cs",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\Models\\Game.cs",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Models\\Game.cs",
+              "RelativeToolTip": "ChessAIWebAPI\\Models\\Game.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T11:34:24.23Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Models\\User.cs",
+              "RelativeDocumentMoniker": "ChessAIWebAPI\\Models\\User.cs",
+              "ToolTip": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\Models\\User.cs",
+              "RelativeToolTip": "ChessAIWebAPI\\Models\\User.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-20T11:33:35.553Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
