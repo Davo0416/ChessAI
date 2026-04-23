@@ -7,9 +7,7 @@ namespace ChessAIWebAPI.Services
 {
     public class MongoService
     {
-        public IMongoCollection<User> Users { get; }
-        public IMongoCollection<Game> Games { get; }
-
+        private readonly IMongoDatabase _database;
 
         public MongoService(IConfiguration config)
         {
@@ -21,12 +19,6 @@ namespace ChessAIWebAPI.Services
             var client = new MongoClient(connectionString);
 
             _database = client.GetDatabase("ChessApp");
-        }
-
-        public MongoService(IMongoCollection<User> users, IMongoCollection<Game> games)
-        {
-            Users = users;
-            Games = games;
         }
 
         public IMongoCollection<User> Users =>
