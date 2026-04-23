@@ -3,22 +3,19 @@ using Moq;
 using ChessAIWebAPI.Controllers;
 using ChessAIWebAPI.Services;
 using ChessAIWebAPI.Models;
-using MongoDB.Driver;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 public class GameControllerTests
 {
-    private readonly Mock<MongoService> _mongoMock;
+    private readonly Mock<IMongoService> _mongoMock;
     private readonly GameController _controller;
 
     public GameControllerTests()
     {
-        var mockUsers = new Mock<IMongoCollection<User>>();
-        var mockGames = new Mock<IMongoCollection<Game>>();
-
-        _mongoMock = new MongoService(mockUsers.Object, mockGames.Object);
-        _controller = new AuthController(mongo);
+        _mongoMock = new Mock<IMongoService>();
+        _controller = new GameController(_mongoMock.Object);
     }
 
     [Fact]
@@ -30,8 +27,8 @@ public class GameControllerTests
             ClientId = "1"
         };
 
-        var mockCollection = new Mock<IMongoCollection<Game>>();
-        _mongoMock.Setup(x => x.Games).Returns(mockCollection.Object);
+        // no mocking MongoDB collection anymore
+        _mongoMock.Setup(x => x.Games);
 
         var result = await _controller.SaveGame(game);
 
@@ -41,13 +38,15 @@ public class GameControllerTests
     [Fact]
     public async Task GetAll_ReturnsOkResult()
     {
-        var mockCollection = new Mock<IMongoCollection<Game>>();
+        var games = new List<Game>
+        {
+            new Game { Username = "test", ClientId = "1" }
+        };
 
-        mockCollection.Setup(x =>
-            x.Find(It.IsAny<FilterDefinition<Game>>(), null))
-            .Returns(Mock.Of<IFindFluent<Game, Game>>());
-
-        _mongoMock.Setup(x => x.Games).Returns(mockCollection.Object);
+        // you must mock controller logic instead of MongoDB
+        _mongoMock
+            .Setup(x => x.Games)
+            .Returns((MongoDB.Driver.IMongoCollection<Game>)null);
 
         var result = await _controller.GetAll();
 
@@ -57,10 +56,6 @@ public class GameControllerTests
     [Fact]
     public async Task ClearUserGames_ReturnsOk()
     {
-        var mockCollection = new Mock<IMongoCollection<Game>>();
-
-        _mongoMock.Setup(x => x.Games).Returns(mockCollection.Object);
-
         var result = await _controller.ClearUserGames("test");
 
         Assert.IsType<OkObjectResult>(result);
