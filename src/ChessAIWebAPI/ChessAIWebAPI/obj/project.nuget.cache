@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "XImd/rAcpes=",
+  "dgSpecHash": "Y0Qsxf52JtY=",
   "success": true,
-  "projectFilePath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
+  "projectFilePath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAI\\src\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\davog\\.nuget\\packages\\bcrypt.net-next\\4.1.0\\bcrypt.net-next.4.1.0.nupkg.sha512",
     "C:\\Users\\davog\\.nuget\\packages\\dnsclient\\1.6.1\\dnsclient.1.6.1.nupkg.sha512",

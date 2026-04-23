@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj": {}
+    "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAI\\src\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj": {
+    "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAI\\src\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
+        "projectUniqueName": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAI\\src\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
         "projectName": "ChessAIWebAPI",
-        "projectPath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
+        "projectPath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAI\\src\\ChessAIWebAPI\\ChessAIWebAPI\\ChessAIWebAPI.csproj",
         "packagesPath": "C:\\Users\\davog\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAIWebAPI\\ChessAIWebAPI\\obj\\",
+        "outputPath": "C:\\Users\\davog\\OneDrive\\Desktop\\ChessAI\\src\\ChessAIWebAPI\\ChessAIWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -44,7 +44,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "10.0.100"
+        "SdkAnalysisLevel": "10.0.200"
       },
       "frameworks": {
         "net8.0": {
@@ -82,7 +82,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.202/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
