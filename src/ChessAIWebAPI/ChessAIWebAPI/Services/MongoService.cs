@@ -7,7 +7,9 @@ namespace ChessAIWebAPI.Services
 {
     public class MongoService
     {
-        private readonly IMongoDatabase _database;
+        public IMongoCollection<User> Users { get; }
+        public IMongoCollection<Game> Games { get; }
+
 
         public MongoService(IConfiguration config)
         {
