@@ -18,20 +18,27 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: Restore API
+      run: dotnet restore ./src/ChessAIWebAPI/ChessAIWebAPI.sln
 
-    - name: Build solution
-      run: dotnet build --configuration Release --no-restore
+    - name: Build API
+      run: dotnet build ./src/ChessAIWebAPI/ChessAIWebAPI.sln --configuration Release --no-restore
 
-    - name: Run tests
-      run: dotnet test --no-build --verbosity normal
+    - name: Test API
+      run: dotnet test ./src/ChessAIWebAPI/ChessAIWebAPI.sln --no-build --verbosity normal
+
+
+    - name: Restore WPF
+      run: dotnet restore ./src/ChessAIApp/ChessAIApp.sln
+
+    - name: Build WPF
+      run: dotnet build ./src/ChessAIApp/ChessAIApp.sln --configuration Release --no-restore
 
     - name: Publish API
-      run: dotnet publish ./src/ChessAIApp -c Release -o publish/api
+      run: dotnet publish ./src/ChessAIWebAPI -c Release -o publish/api
 
     - name: Publish WPF
-      run: dotnet publish ./src/ChessAIWebAPI -c Release -o publish/wpf
+      run: dotnet publish ./src/ChessAIApp -c Release -o publish/wpf
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
