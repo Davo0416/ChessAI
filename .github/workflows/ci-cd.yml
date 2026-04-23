@@ -25,13 +25,13 @@ jobs:
       run: dotnet build ./src/ChessAIWebAPI/ChessAIWebAPI.sln --configuration Release --no-restore
 
     - name: Restore tests
-      run: dotnet restore ChessAIWebAPI.Tests
+      run: dotnet restore ./tests/ChessAIWebAPI.Tests
 
     - name: Build tests
-      run: dotnet build ChessAIWebAPI.Tests --configuration Release --no-restore
+      run: dotnet build ./tests/ChessAIWebAPI.Tests --configuration Release --no-restore
 
     - name: Run tests
-      run: dotnet test ChessAIWebAPI.Tests --configuration Release --no-build --verbosity normal
+      run: dotnet test ./tests/ChessAIWebAPI.Tests --configuration Release --no-build --verbosity normal
 
     - name: Restore WPF
       run: dotnet restore ./src/ChessAIApp/ChessAIApp.sln
