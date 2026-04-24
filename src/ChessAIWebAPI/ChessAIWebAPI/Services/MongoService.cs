@@ -11,7 +11,7 @@ namespace ChessAIWebAPI.Services
 
         public MongoService(IConfiguration config)
         {
-            var connectionString = config["MongoDb:ConnectionString"];
+            var connectionString = Environment.GetEnvironmentVariable("MONGO_URI") ?? config["MongoDb:ConnectionString"];
 
             if (string.IsNullOrEmpty(connectionString))
                 throw new Exception("MongoDB connection string is missing!");
