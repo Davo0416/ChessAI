@@ -14,6 +14,7 @@ namespace ChessAIApp
 {
   public static class Utils
   {
+    //Get the algebraic notation of a given move like - e4, Bxc4, Qb2#
     public static string AlgebraicNotation(ChessGame game, Move move, string[,] board)
     {
       string piece = GetPiece(new Point(8 - move.OriginalPosition.Rank, (int)move.OriginalPosition.File), board);
@@ -22,6 +23,8 @@ namespace ChessAIApp
 
       ChessGame clone = new ChessGame(game.GetFen());
       var moveResult = clone.MakeMove(move, true);
+
+      //Handle Castling
       if (moveResult.HasFlag(MoveType.Castling))
       {
         if (moveString[3] == 'g')
@@ -30,6 +33,7 @@ namespace ChessAIApp
           return "O-O-O";
       }
 
+      //Handle Captures
       if (result.ToLower() == "p")
       {
         result = "";
@@ -40,23 +44,30 @@ namespace ChessAIApp
         result += 'x';
       result += moveString.Substring(3);
 
+      //Handle Checkmates
       if (clone.IsCheckmated(clone.WhoseTurn))
         result += '#';
       else if (clone.IsInCheck(clone.WhoseTurn))
         result += '+';
 
+      //Handle Promotions
       if (move.Promotion != null)
         result += "=" + move.Promotion;
 
       return result.Replace(" ", "");
     }
+
+    //Get piece occupying a given square on a given board
     public static string GetPiece(Point square, string[,] board)
     {
       return board[(int)square.X, (int)square.Y];
     }
+
+    //Check if move is pseoudo legal
     public static bool IsPseoudoLegal(Move move, string[,] board, ChessGame game, bool kingMoved)
     {
-
+      
+      //Preprocess the move
       if (move.OriginalPosition == move.NewPosition)
         return false;
       int fromRow = 8 - move.OriginalPosition.Rank;
@@ -76,19 +87,25 @@ namespace ChessAIApp
 
       switch (pieceType)
       {
+        //Handle Pawn
         case 'p':
           if (color == 'w')
             return (toRow - fromRow == -1 && Math.Abs(fromCol - toCol) <= 1) || (toRow - fromRow == -2 && fromCol - toCol == 0 && toRow == 4);
           else
             return (toRow - fromRow == 1 && Math.Abs(fromCol - toCol) <= 1) || (toRow - fromRow == 2 && fromCol - toCol == 0 && toRow == 5);
+        //Handle Knight
         case 'n':
           return Math.Abs(fromRow - toRow) + Math.Abs(fromCol - toCol) == 3 && fromRow != toRow && fromCol != toCol;
+        //Handle Bishop
         case 'b':
           return Math.Abs(fromRow - toRow) == Math.Abs(fromCol - toCol);
+        //Handle Rook
         case 'r':
           return fromRow == toRow || fromCol == toCol;
+        //Handle Queen
         case 'q':
           return fromRow == toRow || fromCol == toCol || Math.Abs(fromRow - toRow) == Math.Abs(fromCol - toCol);
+        //Handle King + Castling
         case 'k':
           {
             bool regularKingMove = Math.Abs(fromRow - toRow) <= 1 && Math.Abs(fromCol - toCol) <= 1;
@@ -116,6 +133,8 @@ namespace ChessAIApp
 
       return false;
     }
+
+    //Function to convert 2 squares to a move
     public static Move SquaresToMove(Point fromSquare, Point toSquare, ChessGame game)
     {
       string moveFrom = ToSquareName(fromSquare);
@@ -124,12 +143,16 @@ namespace ChessAIApp
       Move move = new Move(moveFrom, moveTo, game.WhoseTurn, null);
       return move;
     }
+
+    //Function to convert a square to a name - a2, b3, f8
     public static string ToSquareName(Point square)
     {
-      char file = (char)('a' + square.Y);  // 0 → a, 1 → b,
-      char rank = (char)('8' - square.X);  // 0 (top) → 8, 7 (bottom) → 1
+      char file = (char)('a' + square.Y);  // 0 -> a, 1 -> b,
+      char rank = (char)('8' - square.X);  // 0 (top) -> 8, 7 (bottom) -> 1
       return $"{file}{rank}";
     }
+
+    //Function to convert a move to its start & end squares
     public static (Point, Point) MoveToSquares(Move? move)
     {
       if (move == null)
@@ -142,6 +165,8 @@ namespace ChessAIApp
 
       return (new Point(fromRow, fromCol), new Point(toRow, toCol));
     }
+
+    //Function to return player that made the move
     public static Player MoveToPlayer(Move? move, string[,] board)
     {
       (Point fromSquare, Point _) = Utils.MoveToSquares(move);
@@ -149,6 +174,8 @@ namespace ChessAIApp
       if (piece[0] == 'w') return Player.White;
       else return Player.Black;
     }
+
+    //Function to convert fen to a 8x8 string board
     public static string[,] FenToBoard(string? fenNotation)
     {
       if (fenNotation == null)

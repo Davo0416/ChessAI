@@ -12,6 +12,7 @@ namespace ChessAIApp
 {
   public class MoveHistory
   {
+    //Defining values
     private static readonly ObservableCollection<MoveEntry> _moveList = new();
 
     public static ReadOnlyObservableCollection<MoveEntry> MoveList { get; }
@@ -20,10 +21,13 @@ namespace ChessAIApp
 
     public const string startingFen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+    //Add a pre-made MoveEntry object to move history
     public static void Add(MoveEntry move)
     {
       _moveList.Add(move);
     }
+
+    //Add a new entry to move history
     public static void Add(Player player, string notation, string positionFen, Point fromSquare, Point toSquare)
     {
       var moveSquares = new SquareMove { Start = new SerializablePoint(fromSquare), End = new SerializablePoint(toSquare) };
@@ -56,6 +60,7 @@ namespace ChessAIApp
       SelectLast();
     }
 
+    //Remove the last move from the history
     public static void RemoveLast()
     {
       if (_moveList.Count == 0)
@@ -70,6 +75,7 @@ namespace ChessAIApp
       }
     }
 
+    //Remove the move at the given index from the history
     public static void RemoveAt(int id)
     {
       if (id >= 0 && id < _moveList.Count)
@@ -96,21 +102,28 @@ namespace ChessAIApp
       }
     }
 
+    //Clear all moves
     public static void Clear() => _moveList.Clear();
 
+    //Get moves
     public static ObservableCollection<MoveEntry> GetMoves()
     {
       return _moveList;
     }
+
+    //Get move by id
     public static MoveEntry? GetMoveEntry(int id)
     {
       return (id >= 0 && id < _moveList.Count) ? _moveList[id] : null;
     }
 
+    //Get move count in the history
     public static int GetLength() => _moveList.Count;
 
+    //Get the selected move
     public static MoveEntry? GetSelected() => GetMoveEntry(currentSelectedRowIndex);
 
+    //Get the selected moves fen
     public static string GetSelectedFen()
     {
       if (_moveList.Count == 0) return "";
@@ -126,6 +139,7 @@ namespace ChessAIApp
       return "";
     }
 
+    //Get the highlights active during the selected move
     public static (Point start, Point end) GetSelectedHighlights()
     {
       if (_moveList.Count == 0)
@@ -142,12 +156,14 @@ namespace ChessAIApp
       return (new Point(0, 0), new Point(0, 0));
     }
 
+    //Select a move with the given row & column
     public static void Select(int row, int col)
     {
       currentSelectedRowIndex = row;
       currentSelectedColumnIndex = col;
     }
 
+    //Select previous move
     public static void SelectPrevious()
     {
       if (currentSelectedColumnIndex == 1)
@@ -163,12 +179,14 @@ namespace ChessAIApp
       currentSelectedRowIndex = Math.Clamp(currentSelectedRowIndex, 0, GetLength() - 1);
     }
 
+    //Select first move in the history
     public static void SelectFirst()
     {
       currentSelectedRowIndex = 0;
       currentSelectedColumnIndex = 0;
     }
 
+    //Select last move in the history
     public static void SelectLast()
     {
       if (_moveList.Count == 0) return;
@@ -178,6 +196,7 @@ namespace ChessAIApp
           _moveList[currentSelectedRowIndex].BlackFen != null ? 1 : 0;
     }
 
+    //Select next move
     public static void SelectNext()
     {
       if (currentSelectedColumnIndex == 0)
@@ -193,6 +212,7 @@ namespace ChessAIApp
       currentSelectedRowIndex = Math.Clamp(currentSelectedRowIndex, 0, GetLength() - 1);
     }
 
+    //Save game info to a json file with the given path
     public static void SaveToJson(string filePath, string? botName, string? difficulty, string? color, bool isFinished = false, string? result = null)
     {
       var options = new JsonSerializerOptions { WriteIndented = true };
@@ -210,6 +230,7 @@ namespace ChessAIApp
       System.IO.File.WriteAllText(filePath, JsonSerializer.Serialize(savedGame, options));
     }
 
+    //Load a game from a given json path
     public static SavedGame? LoadGame(string filePath)
     {
       if (!System.IO.File.Exists(filePath))
@@ -218,6 +239,8 @@ namespace ChessAIApp
       return JsonSerializer.Deserialize<SavedGame>(System.IO.File.ReadAllText(filePath));
     }
 
+
+    //Get the latest unfinished game in a given folder 
     public static string? GetLatestUnfinishedGame(string folder)
     {
       if (!Directory.Exists(folder))
@@ -238,6 +261,7 @@ namespace ChessAIApp
       return null;
     }
 
+    //Saved game class for game info storage
     public class SavedGame
     {
       public bool IsFinished { get; set; }
@@ -249,6 +273,7 @@ namespace ChessAIApp
       public List<MoveEntry> Moves { get; set; } = new();
     }
 
+    //Move entry class for move info storage
     public class MoveEntry
     {
       public int Number { get; set; }
@@ -261,6 +286,7 @@ namespace ChessAIApp
       public SquareMove BlackSquares { get; set; } = new();
     }
 
+    //Square class for board square info storage
     public class SquareMove
     {
       [SetsRequiredMembers]
@@ -273,6 +299,7 @@ namespace ChessAIApp
       public required SerializablePoint End { get; set; }
     }
 
+    //Serializable point class used for point storage inside json
     public class SerializablePoint
     {
       public double X { get; set; }

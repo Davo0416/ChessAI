@@ -10,10 +10,16 @@ using ChessDotNet;
 
 namespace ChessAIApp
 {
+  //Board class - handles board UI, piece drag & dropping, gameplay
   public class Board
   {
+    //Private board values
     private readonly Panel boardGrid, dragLayer, arrowLayer;
     private Player? currentView = Player.White;
+
+    //Board state & premove board state
+    //Board - actual board state
+    //PremoveBoard - premoves overlayed on actual board state
     private string[,] board, premoveBoard;
     private string[,]? viewBoard;
     private const int BoardSize = 8;
@@ -25,15 +31,6 @@ namespace ChessAIApp
     private Point _originalPosition;
     private Panel? _originalParent;
     private Point? _originalParentPoint;
-    private static Color darkColor => (Color)Application.Current.FindResource("DarkSquareColor");
-    private static Color lightColor => (Color)Application.Current.FindResource("LightSquareColor");
-    private static Color highlightColor => (Color)Application.Current.FindResource("EngineHighlightColor");
-    private static Color userHighlightColor => (Color)Application.Current.FindResource("UserHighlightRed");
-    private static Color userHighlightColorOrange => (Color)Application.Current.FindResource("UserHighlightOrange");
-    private static Color userHighlightColorBlue => (Color)Application.Current.FindResource("UserHighlightBlue");
-    private static Color userHighlightColorGreen => (Color)Application.Current.FindResource("UserHighlightGreen");
-    private static Color arrowColor => (Color)Application.Current.FindResource("ArrowColor");
-    private static Color hintArrowColor => (Color)Application.Current.FindResource("HintArrowColor");
     private Bot? botOne, botTwo;
     Player? RandomTurn, InvertedRandomTurn;
     private readonly Canvas promotionLayer;
@@ -45,7 +42,21 @@ namespace ChessAIApp
     private const string highlightTxt = "Highlight";
     private const string premoveTxt = "Premove";
 
+    //Defining board color values based on the selected Theme
+    private static Color darkColor => (Color)Application.Current.FindResource("DarkSquareColor");
+    private static Color lightColor => (Color)Application.Current.FindResource("LightSquareColor");
+    private static Color highlightColor => (Color)Application.Current.FindResource("EngineHighlightColor");
+    private static Color userHighlightColor => (Color)Application.Current.FindResource("UserHighlightRed");
+    private static Color userHighlightColorOrange => (Color)Application.Current.FindResource("UserHighlightOrange");
+    private static Color userHighlightColorBlue => (Color)Application.Current.FindResource("UserHighlightBlue");
+    private static Color userHighlightColorGreen => (Color)Application.Current.FindResource("UserHighlightGreen");
+    private static Color arrowColor => (Color)Application.Current.FindResource("ArrowColor");
+    private static Color hintArrowColor => (Color)Application.Current.FindResource("HintArrowColor");
+    
+    //Public bool to track game loading state
     public bool Loaded { get; set; }
+
+    //Board constructor
     public Board(
       Panel BoardGrid,
       Canvas arrowLayer,
@@ -55,6 +66,7 @@ namespace ChessAIApp
       Action<string, string> EndScreen
     )
     {
+      //Start board state
       board = new string[8, 8]
       {
         { "bR","bN","bB","bQ","bK","bB","bN","bR" },
@@ -66,6 +78,7 @@ namespace ChessAIApp
         { "wP","wP","wP","wP","wP","wP","wP","wP" },
         { "wR","wN","wB","wQ","wK","wB","wN","wR" },
       };
+      //Premove board state
       premoveBoard = new string[8, 8]
       {
         { "bR","bN","bB","bQ","bK","bB","bN","bR" },
@@ -86,16 +99,21 @@ namespace ChessAIApp
       game = new ChessGame();
     }
 
-    // Board ------------------------------------------------------------------------------------
+    // Board Functions -------------------------------------------------------------------------------------
+
+    //Build Board - Makes the board with the squares and pieces on it
     public void BuildBoard()
     {
+      //Claar board before building
       boardGrid.Children.Clear();
       Overlays.ClearArrows(arrowLayer);
 
+      //Loop 8x8 board
       for (int row = 0; row < BoardSize; row++)
       {
         for (int col = 0; col < BoardSize; col++)
         {
+          //Flip if viewing from black side
           int colNum = col, rowNum = row;
           if (currentView == Player.Black)
           {
@@ -103,6 +121,7 @@ namespace ChessAIApp
             rowNum = 7 - row;
           }
 
+          //Create a square
           var square = new Grid
           {
             Background = ((rowNum + colNum) % 2 == 0)
@@ -111,9 +130,11 @@ namespace ChessAIApp
             Tag = (rowNum, colNum)
           };
 
+          //Add event handlers
           square.MouseRightButtonDown += Square_MouseRightButtonDown;
           square.MouseRightButtonUp += Square_MouseRightButtonUp;
 
+          //Add coords if enabled
           if (showCoords)
           {
             if (col == 0)
@@ -151,6 +172,7 @@ namespace ChessAIApp
             }
           }
 
+          //Setup piece display
           if (premoveBoard == null)
             premoveBoard = (string[,])board.Clone();
 
@@ -159,6 +181,7 @@ namespace ChessAIApp
           if (viewBoard != null)
             displayBoard = viewBoard;
 
+          //Display pieces based on 8x8 board state
           if (!string.IsNullOrEmpty(displayBoard[rowNum, colNum]))
           {
             var piece = new Image
@@ -168,6 +191,7 @@ namespace ChessAIApp
               Tag = new Point(rowNum, colNum)
             };
 
+            //Add piece event handlers
             piece.MouseLeftButtonDown += Piece_MouseLeftButtonDown;
             piece.MouseMove += Piece_MouseMove;
             piece.MouseLeftButtonUp += Piece_MouseLeftButtonUp;
@@ -176,12 +200,13 @@ namespace ChessAIApp
             if (!(_isDragging && row == (int)dragOrigin.X && col == (int)dragOrigin.Y))
               square.Children.Add(piece);
           }
-
+          //Add square to board
           boardGrid.Children.Add(square);
         }
       }
       if (viewBoard == null)
       {
+        //Display active highlights
         if (fromHighlightSquare != null)
         {
           Grid? fromGrid = GetSquare(boardGrid, (int)fromHighlightSquare.Value.X, (int)fromHighlightSquare.Value.Y);
@@ -194,7 +219,7 @@ namespace ChessAIApp
           if (toGrid != null)
             Overlays.HighlightSquare(toGrid, highlightColor, highlightTxt, false);
         }
-
+        //Display active premoves
         foreach (Move? pendingPremove in pendingPremoves)
         {
           ShowPremove(pendingPremove);
@@ -207,12 +232,17 @@ namespace ChessAIApp
         _originalParent = origParent;
       }
 
+      //Board event handler
       boardGrid.MouseLeftButtonDown += OnMouseLeftButtonDown;
     }
+
+    //Update board function
     public void UpdateBoard(ChessGame updatedGame)
     {
+      //Get new board state
       game = updatedGame;
       var boardState = game.GetBoard();
+      //Loop 8x8 through the board - save board state to char[8][8]
       for (int row = 0; row < 8; row++)
       {
         for (int col = 0; col < 8; col++)
@@ -231,12 +261,14 @@ namespace ChessAIApp
         }
       }
 
+      //Reset premoves
       if (pendingPremoves.Count == 0)
       {
         premoveBoard = (string[,])board.Clone();
         kingMoved = false;
       }
 
+      //Rebuild board
       BuildBoard();
     }
     public string[,] GetBoard()
@@ -244,6 +276,8 @@ namespace ChessAIApp
       return board;
     }
     // Events ------------------------------------------------------------------------------------
+
+    //Mouse Left Button Events
     private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
       HidePromotionOverlay();
@@ -253,10 +287,13 @@ namespace ChessAIApp
     private void Piece_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
       HidePromotionOverlay();
+
+      //Capture dragged piece
       _draggedPiece = sender as Image;
       if (_draggedPiece == null) return;
 
       _isDragging = true;
+      //Get piece original square
       _mouseOffset = e.GetPosition(_draggedPiece);
       _originalParent = VisualTreeHelper.GetParent(_draggedPiece) as Panel;
 
@@ -273,6 +310,7 @@ namespace ChessAIApp
         _originalParentPoint = new Point(7 - _originalParentPoint.Value.X, 7 - _originalParentPoint.Value.Y);
       }
 
+      //Move piece to the drag layer
       _originalParent.Children.Remove(_draggedPiece);
       dragLayer.Children.Add(_draggedPiece);
 
@@ -281,6 +319,7 @@ namespace ChessAIApp
       var pos = e.GetPosition(boardGrid);
       _draggedPiece.RenderTransform = new TranslateTransform(pos.X - _mouseOffset.X - _originalPosition.X, pos.Y - _mouseOffset.Y - _originalPosition.Y);
 
+      //Make piece follow the mouse
       _draggedPiece.CaptureMouse();
     }
     private void Piece_MouseMove(object sender, MouseEventArgs e)
@@ -293,7 +332,7 @@ namespace ChessAIApp
         t = new TranslateTransform();
         _draggedPiece.RenderTransform = t;
       }
-
+      //Set dragged piece position to mosue positoion
       Canvas.SetLeft(_draggedPiece, pos.X - _mouseOffset.X - 12.5);
       Canvas.SetTop(_draggedPiece, pos.Y - _mouseOffset.Y - 12.5);
     }
@@ -301,9 +340,11 @@ namespace ChessAIApp
     {
       if (_draggedPiece == null) return;
 
+      //Release dragged piece
       _draggedPiece.ReleaseMouseCapture();
       _isDragging = false;
 
+      //Get the destination square
       var pos = e.GetPosition(boardGrid);
 
       HitTestResult result = VisualTreeHelper.HitTest(boardGrid, pos);
@@ -335,6 +376,7 @@ namespace ChessAIApp
       if (targetSquare == null)
         return;
 
+      //Move dragged piece to the destination square
       dragLayer.Children.Remove(_draggedPiece);
 
       pos = targetSquare.TranslatePoint(new Point(0, 0), boardGrid);
@@ -347,6 +389,7 @@ namespace ChessAIApp
       if (currentView == Player.Black)
         move = InvertMove(move);
 
+      //If is a promotion - show promotion overlay
       if (IsPromotionMove(move) && (game.IsValidMove(move) || Utils.IsPseoudoLegal(move, premoveBoard, game, kingMoved)))
       {
         ShowPromotionOverlay(move);
@@ -354,10 +397,12 @@ namespace ChessAIApp
       }
       if (targetSquare != null && currentView == Utils.MoveToPlayer(move, premoveBoard))
       {
+        //Check if move is legal
         if (MakeMove(move) && !Loaded)
         {
           targetSquare.Children.Add(_draggedPiece);
         }
+        //If no check if its a valid premove
         else if (Utils.IsPseoudoLegal(move, premoveBoard, game, kingMoved) && (Utils.MoveToPlayer(move, premoveBoard) != game.WhoseTurn) && !Loaded)
         {
           int fromRow = 8 - move.OriginalPosition.Rank;
@@ -368,12 +413,14 @@ namespace ChessAIApp
             kingMoved = true;
           }
 
+          //Make the move as a premove
           MakePremove(move);
           targetSquare.Children.Clear();
           targetSquare.Children.Add(_draggedPiece);
           UpdateBoard(game);
           ShowPremove(move);
         }
+        //If no aswell return piece to original parent
         else
         {
           if (_originalParent != null && _draggedPiece != null && !(_draggedPiece.Parent is Panel _))
@@ -390,9 +437,14 @@ namespace ChessAIApp
         _draggedPiece.RenderTransform = Transform.Identity;
       _draggedPiece = null;
     }
+
+    //Reset arrow start
     private Point? _arrowStart = null;
+
+    //Mouse Right Button Events
     private void Square_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
     {
+      //Reset premoves
       if (pendingPremoves.Count > 0)
       {
         pendingPremoves = new List<Move?>();
@@ -402,6 +454,7 @@ namespace ChessAIApp
 
       if (sender is not Grid _) return;
 
+      //Set arrow start to clicked square
       _arrowStart = e.GetPosition(boardGrid);
       if (_arrowStart != null)
       {
@@ -416,13 +469,14 @@ namespace ChessAIApp
     private void Square_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
     {
       if (sender is not Grid square) return;
-
+      //Set arrow end to the square right click was released on
       var arrowEnd = e.GetPosition(boardGrid);
       HitTestResult result = VisualTreeHelper.HitTest(boardGrid, arrowEnd);
       Grid? parentSquare = Board.FindParentSquare(result.VisualHit);
       if (parentSquare != null)
         arrowEnd = parentSquare.TranslatePoint(new Point(37.5, 37.5), boardGrid);
 
+      //If the arrow start and end are the same highlight the square
       if (arrowEnd == _arrowStart)
       {
         if (Keyboard.IsKeyDown(Key.LeftShift))
@@ -434,13 +488,17 @@ namespace ChessAIApp
         else
           Overlays.HighlightSquare(square, userHighlightColor, "UserHighlightRed", true);
       }
+      //If not draw an arrow between the points
       else if (_arrowStart != null)
         Overlays.DrawArrow(arrowLayer, _arrowStart.Value, arrowEnd, arrowColor);
 
+      //Reset arrow start
       _arrowStart = null;
     }
 
     // Utils ------------------------------------------------------------------------------------
+
+    //Bot Utils
     public void SetBotOne(Bot bot)
     {
       botOne = bot;
@@ -449,11 +507,12 @@ namespace ChessAIApp
     {
       botTwo = bot;
     }
+
+    //Game State Utils
     public ChessGame GetGame()
     {
       return game;
     }
-
     public void SetGame(ChessGame game)
     {
       this.game = game;
@@ -480,23 +539,29 @@ namespace ChessAIApp
     }
 
     // GamePlay ------------------------------------------------------------------------------------
+
+    //Make Move - used both by player & bots to make their moves
     public bool MakeMove(Move move)
     {
       viewBoard = null;
       (Point fromSquare, Point toSquare) = Utils.MoveToSquares(move);
 
+      //Check if move is valid
       if (game.IsValidMove(move))
       {
+        //Make move and save it to the move history
         var notation = Utils.AlgebraicNotation(game, move, board);
 
         game.MakeMove(move, true);
         MoveHistory.Add(InvertPlayer(game.WhoseTurn), notation, game.GetFen(), fromSquare, toSquare);
 
+        //Save current game to JSON
         if (!string.IsNullOrEmpty(currentGamePath))
         {
           MoveHistory.SaveToJson(currentGamePath, selectedBot, selectedDifficulty, selectedColor);
         }
 
+        //Update premove board
         if (pendingPremoves.Count > 0 && move.Player == pendingPremoves[0]?.Player)
         {
           string piece = premoveBoard[(int)fromSquare.X, (int)fromSquare.Y];
@@ -504,6 +569,7 @@ namespace ChessAIApp
           premoveBoard[(int)toSquare.X, (int)toSquare.Y] = piece;
         }
 
+        //Highligt starting & ending squares of the move
         Grid? fromGrid = GetSquare(boardGrid, (int)fromSquare.X, (int)fromSquare.Y);
         Grid? toGrid = GetSquare(boardGrid, (int)toSquare.X, (int)toSquare.Y);
 
@@ -520,8 +586,8 @@ namespace ChessAIApp
           _draggedPiece = null;
         }
 
+        //Update the board after the move was made
         UpdateBoard(game);
-
 
         if (fromGrid != null)
         {
@@ -534,16 +600,20 @@ namespace ChessAIApp
           Overlays.HighlightSquare(toGrid, highlightColor, highlightTxt, false);
         }
 
+        //Ask bot to play if its their move
         _ = Play();
+        //Return true as the move was successfully made
         return true;
       }
       else
       {
+        //Return false as the move is invalid
         return false;
       }
     }
     public async Task Play()
     {
+      //Figuring out whose turn it is
       if (RandomTurn == null)
       {
         Random rand = new Random();
@@ -551,6 +621,7 @@ namespace ChessAIApp
         RandomTurn = random > 0 ? Player.White : Player.Black;
         InvertedRandomTurn = random > 0 ? Player.Black : Player.White;
 
+        //Setting board display
         if ((botOne != null && botTwo == null && RandomTurn == Player.White) || (botOne == null && botTwo != null && InvertedRandomTurn == Player.White))
         {
           SetBoardDisplay(Player.Black);
@@ -558,11 +629,13 @@ namespace ChessAIApp
         else SetBoardDisplay(Player.White);
 
       }
+      //Setting bot color
       if (botOne != null)
         botOne.SetColor(RandomTurn);
       if (botTwo != null)
         botTwo.SetColor(InvertedRandomTurn);
 
+      //Ask bot to make move on its turn
       if (!game.IsCheckmated(game.WhoseTurn) && !game.IsStalemated(game.WhoseTurn))
       {
         if (game.WhoseTurn == RandomTurn && botOne != null)
@@ -573,8 +646,10 @@ namespace ChessAIApp
         {
           await botTwo.MakeMove();
         }
+        //Try to play the next premove played by player
         TryPlayPremove();
       }
+      //If is checkmate or stalemate end & save game
       else
       {
         if (game.IsStalemated(game.WhoseTurn))
@@ -606,13 +681,17 @@ namespace ChessAIApp
         currentGamePath = null;
       }
     }
+
+    //Reset Game
     public void ResetGame(string user, bool newPath = false, bool invertColors = false)
     {
+      //New game
       game = new ChessGame();
 
       fromHighlightSquare = null;
       toHighlightSquare = null;
 
+      //Invert player colors if needed
       if (invertColors)
       {
         if (selectedColor == "White")
@@ -620,6 +699,7 @@ namespace ChessAIApp
         else selectedColor = "White";
       }
 
+      //Create a new file for the new game & save to it if needed
       if (newPath)
       {
         string folder = System.IO.Path.Combine(
@@ -654,6 +734,7 @@ namespace ChessAIApp
             { "wR","wN","wB","wQ","wK","wB","wN","wR" },
       };
 
+      //Clear & Rebuild board
       Overlays.ClearArrows(arrowLayer);
       Overlays.UnhighlightAllUserHighlights(boardGrid);
       MoveHistory.Clear();
@@ -661,6 +742,7 @@ namespace ChessAIApp
       InvertBoardDisplay();
       BuildBoard();
 
+      //Finalize inverting player colors
       if (invertColors)
       {
         if (RandomTurn == Player.Black)
@@ -675,24 +757,32 @@ namespace ChessAIApp
         }
       }
 
+      //Reset bots
       if (botOne != null)
         botOne.Reset();
       if (botTwo != null)
         botTwo.Reset();
+
+      //Start game
       _ = Play();
     }
 
     // Promotion ------------------------------------------------------------------------------------
+
     void ShowPromotionOverlay(Move move)
     {
+      //Clear promotion layer
       promotionLayer.Children.Clear();
 
+      //Invert move if is made by black
       if (currentView == Player.Black)
         move = InvertMove(move);
 
+      //Prepare to make promotion
       pendingPromotionMove = move;
       var (_, to) = Utils.MoveToSquares(move);
 
+      //Show promotion overlay with all the piece options
       var panel = new StackPanel
       {
         Orientation = Orientation.Vertical,
@@ -707,9 +797,11 @@ namespace ChessAIApp
 
       char[] promotionPieces = new[] { 'Q', 'R', 'B', 'N' };
 
+      //Reverse order if on the bottom of the board
       if ((int)to.X == 7)
         Array.Reverse(promotionPieces);
 
+      //Render each piece based on players color
       foreach (char p in promotionPieces)
       {
         var img = new Image
@@ -721,11 +813,13 @@ namespace ChessAIApp
           Height = 75,
           Tag = p
         };
-
+        
+        //Add selection event handler
         img.MouseLeftButtonDown += PromotionClicked;
         panel.Children.Add(img);
       }
 
+      //Position canvas correctly relative to the board & show it
       if ((int)to.X == 0)
       {
         Canvas.SetLeft(panel, to.Y * 75);
@@ -739,7 +833,6 @@ namespace ChessAIApp
 
       promotionLayer.Children.Add(panel);
     }
-
     public void HidePromotionOverlay()
     {
       promotionLayer.Children.Clear();
@@ -758,6 +851,7 @@ namespace ChessAIApp
     {
       if (pendingPromotionMove == null) return;
 
+      //Get selected promotion piece & finalize the move
       char pieceChar = (char)((Image)sender).Tag;
 
       var finalMove = new Move(
@@ -769,9 +863,11 @@ namespace ChessAIApp
       promotionLayer.Children.Clear();
       pendingPromotionMove = null;
 
+      //Invert move for black
       if (currentView == Player.Black)
         finalMove = InvertMove(finalMove);
 
+      //Make the move / premove
       if (!MakeMove(finalMove) && Utils.IsPseoudoLegal(finalMove, premoveBoard, game, kingMoved))
       {
         MakePremove(finalMove);
@@ -794,11 +890,12 @@ namespace ChessAIApp
           }
 
         }
+        //Display the premove on the screen
         ShowPremove(finalMove);
       }
     }
 
-
+    //Get Players Turn
     public Player? GetRandomTurn()
     {
       return RandomTurn;
@@ -815,7 +912,8 @@ namespace ChessAIApp
         return false;
 
       char type = char.ToLower(piece[1]);
-
+      //Check if move was made by a pawn and if it reached the oposite last rank - return true
+      //Else - return false
       if (type != 'p')
         return false;
 
@@ -824,15 +922,19 @@ namespace ChessAIApp
     }
 
     // Premoves -------------------------------------------------------------------------------------
+
+    //Defining premove values
     private List<Move?> pendingPremoves = new List<Move?>();
     private bool kingMoved = false;
 
     void MakePremove(Move move)
     {
+      //Add premove to list
       pendingPremoves.Add(move);
 
       (Point fromSquare, Point toSquare) = Utils.MoveToSquares(move);
 
+      //Update premove board
       string piece = premoveBoard[(int)fromSquare.X, (int)fromSquare.Y];
 
       premoveBoard[(int)fromSquare.X, (int)fromSquare.Y] = "";
@@ -843,6 +945,7 @@ namespace ChessAIApp
 
       int dist = (int)(fromSquare.Y - toSquare.Y);
 
+      //Handle castling premove
       if (piece[1] == 'K' && Math.Abs(dist) == 2)
       {
         premoveBoard[(int)toSquare.X, (int)toSquare.Y + (dist / 2)] = piece[0] + "R";
@@ -858,10 +961,11 @@ namespace ChessAIApp
       if (move == null)
         return;
       var (from, to) = Utils.MoveToSquares(move);
-
+      //Find premove start & end squares
       Grid? fromGrid = GetSquare(boardGrid, (int)from.X, (int)from.Y);
       Grid? toGrid = GetSquare(boardGrid, (int)to.X, (int)to.Y);
 
+      //Highlight the start & end squares to show the premove
       if (fromGrid != null)
       {
         Overlays.UnhighlightSquare(fromGrid, highlightTxt);
@@ -874,8 +978,10 @@ namespace ChessAIApp
         Overlays.HighlightSquare(toGrid, userHighlightColor, premoveTxt, false);
       }
 
+      //Handle Castling display
       int dist = (int)(from.Y - to.Y);
       string piece = Utils.GetPiece(to, premoveBoard);
+      //Highligt rook start & end squares too
       if (piece != "" && piece[1] == 'K' && Math.Abs(dist) == 2)
       {
         Grid? fromRook;
@@ -897,10 +1003,13 @@ namespace ChessAIApp
           Overlays.HighlightSquare(toRook, userHighlightColor, premoveTxt, false);
       }
     }
+
+    //Try to play the first stored premove
     void TryPlayPremove()
     {
       if (pendingPremoves.Count == 0)
         return;
+      //Retrieve first premove
       Move? pendingPremove = pendingPremoves[0];
       if (game.WhoseTurn == pendingPremove?.Player)
         return;
@@ -908,14 +1017,16 @@ namespace ChessAIApp
       (Point fromSquare, Point toSquare) = Utils.MoveToSquares(pendingPremove);
       Move premove = Utils.SquaresToMove(fromSquare, toSquare, game);
       premove.Promotion = pendingPremove?.Promotion;
-
+      //Check move validity
       if (game.IsValidMove(premove))
       {
+        //Remove the premove from the list and play it
         pendingPremoves.RemoveAt(0);
         MakeMove(premove);
       }
       else
       {
+        //Reset the whole premove list
         pendingPremoves = new List<Move?>();
         UpdateBoard(game);
       }
@@ -932,6 +1043,8 @@ namespace ChessAIApp
       currentView = player;
       UpdateBoard(game);
     }
+
+    //Flip board display
     public void InvertBoardDisplay()
     {
       if (currentView == Player.Black)
@@ -939,6 +1052,8 @@ namespace ChessAIApp
       else
         currentView = Player.Black;
     }
+
+    //Helper to Invert Mover for Black
     static Move InvertMove(Move move)
     {
       Position from = move.OriginalPosition;
@@ -962,6 +1077,7 @@ namespace ChessAIApp
       );
     }
 
+    //Helper to Invert Player
     static Player InvertPlayer(Player player)
     {
       if (player == Player.White)
@@ -975,11 +1091,15 @@ namespace ChessAIApp
       RandomTurn = InvertPlayer(player);
       SetBoardDisplay(player);
     }
+
+    //Show a given position based on fen
     public void ShowPosition(string fen)
     {
       if (fen != null && fen != "")
         ShowPosition(Utils.FenToBoard(fen));
     }
+
+    //Show a given position based on string[,]
     void ShowPosition(string[,] position)
     {
       if (position == null)
@@ -990,6 +1110,7 @@ namespace ChessAIApp
       UpdateBoard(game);
     }
 
+    //Get piece occupying the given square
     public string GetPiece(Point square, Player? color)
     {
       if (color == Player.White)
@@ -998,6 +1119,7 @@ namespace ChessAIApp
         return Utils.GetPiece(new Point(7 - square.X, 7 - square.Y), board);
     }
 
+    //Draw arrow for the suggested move by the computer
     public void DrawHintArrow(Point start, Point end)
     {
       Grid? startSquare = GetSquare(boardGrid, (int)start.X, (int)start.Y);
@@ -1011,6 +1133,7 @@ namespace ChessAIApp
       Overlays.DrawArrow(arrowLayer, start, end, hintArrowColor);
     }
 
+    //Highlight a given square
     public void HighlightSquare(Point square)
     {
       Grid? squareToHighlight = GetSquare(boardGrid, (int)square.X, (int)square.Y);
@@ -1018,16 +1141,24 @@ namespace ChessAIApp
         Overlays.HighlightSquare(squareToHighlight, highlightColor, highlightTxt, false);
     }
 
+    //Undo last played move
     public void UndoMove()
     {
 
+      //If players turn undo bots last move aswell
       if (currentView == game.WhoseTurn)
       {
         game.Undo();
         MoveHistory.RemoveLast();
       }
+
+      //Undo in game
       game.Undo();
+
+      //Undo in Game History
       MoveHistory.RemoveLast();
+
+      //Update display
       ShowPosition(game.GetFen());
       UpdateBoard(game);
     }

@@ -10,6 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ChessDotNet;
 
+// Abstract Bot class - Base for every other bot class
 namespace ChessAIApp
 {
   public abstract class Bot

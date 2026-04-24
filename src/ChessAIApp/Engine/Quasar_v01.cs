@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace ChessAIApp
 {
-    //Quasar chess Bot v01 =======================================
+    //Quasar chess Bot v01
     //Evaluates positions based on material gain and piece activity
     //Uses alpha-beta pruning to reduce computation time
     //Depth 4
@@ -18,9 +18,9 @@ namespace ChessAIApp
         public Quasarv01(Board board) : base(board) { }
         private Player? color;
 
+        //Defining local values
         private DateTime searchStart;
         private readonly int maxSearchTimeMs = 5000;
-
         private static readonly Dictionary<char, int> PieceValue = new()
         {
             { 'P', 1 },
@@ -31,6 +31,7 @@ namespace ChessAIApp
             { 'K', 0 }
         };
 
+        //Set bot color
         public override void SetColor(Player? color)
         {
             this.color = color;
@@ -56,12 +57,16 @@ namespace ChessAIApp
             }
         }
 
+        //Iterative Deepening Search Algorithm - Calculating moves based on time not depth
+        //Results in more depth in simpler positions
         private Move IterativeDeepeningSearch()
         {
+            //Calclute best move
             Move bestMove = GetAllLegalMoves(game)[0];
 
             for (int depth = 1; depth <= 100; depth++)
             {
+                //Break if time is up
                 if (IsTimeUp())
                     break;
 
@@ -77,6 +82,7 @@ namespace ChessAIApp
             return (DateTime.Now - searchStart).TotalMilliseconds > maxSearchTimeMs;
         }
 
+        //Evaluate functions - Using Alpha–Beta pruning
         public Move Evaluate(int depth)
         {
             return Evaluate(game, depth);
@@ -86,6 +92,7 @@ namespace ChessAIApp
             var moves = GetAllLegalMoves(game);
             Move best = moves[0];
 
+            //Defining the starting states of alpha & beta
             float alpha = float.NegativeInfinity;
             float beta = float.PositiveInfinity;
 
@@ -99,8 +106,10 @@ namespace ChessAIApp
                 if (clone.IsCheckmated(clone.WhoseTurn))
                     return move;
 
+                //Reccursive call
                 float score = -Negamax(clone, depth - 1, -beta, -alpha);
 
+                //Storing the best move
                 if (score > bestScore)
                 {
                     bestScore = score;
@@ -113,8 +122,10 @@ namespace ChessAIApp
             return best;
         }
 
+        //Negamax
         private float Negamax(ChessGame game, int depth, float alpha, float beta)
         {
+            //If last depth or there are no moves return the board evaluation
             if (depth == 0)
                 return EvaluateBoard(game);
 
@@ -123,15 +134,19 @@ namespace ChessAIApp
             if (moves.Count == 0)
                 return EvaluateBoard(game);
 
+            //Loop through all the possible moves to find the best one
             float bestScore = float.NegativeInfinity;
 
             foreach (Move move in moves)
             {
+                //Make a clone and make the candidate move
                 ChessGame clone = new ChessGame(game.GetFen());
                 clone.MakeMove(move, true);
 
+                //Evaluate the resulted positon
                 float score = -Negamax(clone, depth - 1, -beta, -alpha);
 
+                //Save the best move
                 if (score > bestScore)
                     bestScore = score;
 
@@ -144,16 +159,19 @@ namespace ChessAIApp
             return bestScore;
         }
 
+        //Evaluate position
         private float EvaluateBoard(ChessGame game)
         {
             float score = 0;
             var board = game.GetBoard();
 
+            //Handle checkmate & stalemate
             if (game.IsCheckmated(game.WhoseTurn))
                 return float.NegativeInfinity;
             else if (game.IsStalemated(game.WhoseTurn))
                 return 0;
 
+            //Loop through the board & calcluate the material advantage
             for (int rank = 0; rank < 8; rank++)
             {
                 for (int file = 0; file < 8; file++)
@@ -171,7 +189,7 @@ namespace ChessAIApp
                         else
                             score -= value;
 
-                        // Add piece activity
+                        //Add piece activity using Bitboards
                         score += PieceActivity(piece, new Point(rank, file)) * 0.01f;
                     }
                 }
@@ -180,6 +198,7 @@ namespace ChessAIApp
             return score;
         }
 
+        //Function to impose repetition penalty to prevent unneeded 3 fold repetitions
         private float RepetitionPenalty(Move move)
         {
             if (board == null)
@@ -199,6 +218,7 @@ namespace ChessAIApp
             return isRepeat ? -0.25f : 0;
         }
 
+         //Function to impose a penalty to prevent moving the same piece twice in a row as it is generally not optimal
         private float SamePieceMovePenalty(Move move)
         {
             if (board == null)
@@ -225,12 +245,14 @@ namespace ChessAIApp
 
             return isRepeat ? -0.25f : 0;
         }
+
+        //Function to calculate the piece activity based on its square
         private static int PieceActivity(Piece piece, Point square)
         {
             if (piece == null)
                 return 0;
 
-            // FEN character: white uppercase, black lowercase
+            // FEN character - white uppercase, black lowercase
             char fen = piece.GetFenCharacter();
             bool isWhite = char.IsUpper(fen);
             fen = char.ToUpper(fen);
@@ -241,6 +263,7 @@ namespace ChessAIApp
             if (!isWhite)
                 x = 7 - x;
 
+            //Get the value from bitmaps
             switch (fen)
             {
                 case 'P': return Bitmaps.PawnTable[x, y];

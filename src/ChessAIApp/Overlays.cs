@@ -8,19 +8,23 @@ namespace ChessAIApp
   public static class Overlays
   {
     // Highlights ===================================================================================
+
+    //Higlight a given square with given a color
     public static void HighlightSquare(Panel square, Color color, string tag, bool doUnhighlight)
     {
       if (square == null) return;
 
+      //Check if is already highlighed
       bool alreadyHighlighted =
           square.Children
           .OfType<Grid>()
           .Any(child => (string?)child.Tag == tag);
 
-      // Remove previous highlights of the same category
+      // if doUnhighlight remove previous highlights of the same category
       if (doUnhighlight)
         UnhighlightSquare(square, tag);
 
+      //Highlight if not already highlighted 
       if (!alreadyHighlighted)
       {
         var highlight = new Grid
@@ -35,6 +39,7 @@ namespace ChessAIApp
       }
     }
 
+    //Unhilight a given square of a given tag of highlight
     public static void UnhighlightSquare(Panel square, string tag)
     {
       if (square == null) return;
@@ -51,6 +56,7 @@ namespace ChessAIApp
         square.Children.Remove(h);
     }
 
+    //Unhiglight everything
     public static void UnhighlightAll(Grid chessBoardGrid)
     {
       var overlaysToRemove = chessBoardGrid.Children
@@ -66,6 +72,7 @@ namespace ChessAIApp
       }
     }
 
+    //Unhiglight all user made highlights
     public static void UnhighlightAllUserHighlights(Panel chessBoardGrid)
     {
       var overlaysToRemove = chessBoardGrid.Children
@@ -82,6 +89,8 @@ namespace ChessAIApp
     }
 
     // Arrows =========================================================================
+
+    //Draw arrow between 2 squares
     public static void DrawArrow(Panel ArrowLayer, Point start, Point end, Color color)
     {
       string id = start.ToString() + end.ToString();
@@ -97,12 +106,14 @@ namespace ChessAIApp
       }
       else
       {
+        //Defining the thickness and shape of the arrow
         double thickness = 15;
         Vector direction = end - start;
         direction.Normalize();
         end -= direction * 20;
         start += direction * 30;
 
+        //Draw the arrow line
         var line = new System.Windows.Shapes.Line
         {
           X1 = start.X,
@@ -127,6 +138,7 @@ namespace ChessAIApp
         Point p2 = end - direction * arrowHeadLength + perpendicular * arrowHeadWidth / 2;
         Point p3 = end - direction * arrowHeadLength - perpendicular * arrowHeadWidth / 2;
 
+        //Draw the arrow head
         var arrowHead = new System.Windows.Shapes.Polygon
         {
           Points = new PointCollection { p1, p2, p3 },
@@ -138,6 +150,7 @@ namespace ChessAIApp
       }
     }
 
+    //Clear all arrows
     public static void ClearArrows(Panel ArrowLayer)
     {
       ArrowLayer.Children.Clear();

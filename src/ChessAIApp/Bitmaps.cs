@@ -1,7 +1,9 @@
 namespace ChessAIApp
 {
+    //Bitmaps used for calculating piece activity
   public static class Bitmaps
   {
+    //Pawn
     public static readonly int[,] PawnTable =
     {
         {   0,   0,   0,   0,   0,   0,   0,   0 },
@@ -13,7 +15,7 @@ namespace ChessAIApp
         {   5,  10,  10, -20, -20,  10,  10,   5 },
         {   0,   0,   0,   0,   0,   0,   0,   0 }
     };
-
+    //Knight
     public static readonly int[,] KnightTable =
     {
         { -40, -30, -20, -20, -20, -20, -30, -40 },
@@ -25,7 +27,7 @@ namespace ChessAIApp
         { -30, -10,   0,   0,   0,   0, -10, -30 },
         { -40, -30, -20, -20, -20, -20, -30, -40 }
     };
-
+    //Bishop
     public static readonly int[,] BishopTable =
     {
         { -20, -10, -10, -10, -10, -10, -10, -20 },
@@ -37,7 +39,7 @@ namespace ChessAIApp
         { -10,   0,   0,   0,   0,   0,   0, -10 },
         { -20, -10, -10, -10, -10, -10, -10, -20 }
     };
-
+    //Rook
     public static readonly int[,] RookTable =
     {
         {   0,   0,   5,  10,  10,   5,   0,   0 },
@@ -49,7 +51,7 @@ namespace ChessAIApp
         {  5,  10,  10,  10,  10,  10,  10,   5 },
         {   0,   0,   0,   5,   5,   0,   0,   0 }
     };
-
+    //Queen
     public static readonly int[,] QueenTable =
     {
         { -20, -10, -10,  -5,  -5, -10, -10, -20 },
@@ -61,7 +63,7 @@ namespace ChessAIApp
         { -10,   0,   5,   0,   0,   0,   0, -10 },
         { -20, -10, -10,  -5,  -5, -10, -10, -20 }
     };
-
+    //King MiddleGame
     public static readonly int[,] KingMiddleGameTable =
     {
         { -30, -40, -40, -50, -50, -40, -40, -30 },
@@ -73,7 +75,7 @@ namespace ChessAIApp
         {  20,  20,   0,   0,   0,   0,  20,  20 },
         {  20,  30,   0,   0,   0,   0,  30,  20 }
     };
-
+    //King EndGame
     public static readonly int[,] KingEndGameTable =
     {
         { -50, -40, -30, -20, -20, -30, -40, -50 },

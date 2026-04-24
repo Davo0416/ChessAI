@@ -5,6 +5,7 @@ namespace ChessAIApp
 {
   public static class ThemeManager
   {
+    //Load the given theme
     public static void LoadTheme(string themeName)
     {
       var dict = new ResourceDictionary

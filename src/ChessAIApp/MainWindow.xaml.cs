@@ -19,6 +19,7 @@ namespace ChessAIApp
 {
     public partial class MainWindow : Window
     {
+        //Window management variables
         Board? chessBoard;
         private string? selectedBot = null;
         private string? selectedColor = "Random";
@@ -30,15 +31,19 @@ namespace ChessAIApp
         private ProfileStats profileStats = new ProfileStats();
 
         private string? currentUser;
+
+        //DB access API
         private readonly HttpClient http = new HttpClient
         {
-            BaseAddress = new Uri("https://localhost:7062/")
+            BaseAddress = new Uri("https://chessai-84pl.onrender.com")
         };
         private const string whiteTxt = "White";
         private const string blackTxt = "Black";
         public MainWindow()
         {
             InitializeComponent();
+
+            //Available Piece Sets
             PieceSetCombo.ItemsSource = new[]
             {
                 "alpha",
@@ -73,6 +78,7 @@ namespace ChessAIApp
                 "xkcd"
             };
 
+            //Available Themes
             ThemeCombo.ItemsSource = new[]
             {
                 "DefaultTheme",
@@ -92,6 +98,7 @@ namespace ChessAIApp
 
         }
 
+        //User class - synced with API user class
         public class User
         {
             public string? Id { get; set; }
@@ -101,6 +108,7 @@ namespace ChessAIApp
             public string? PasswordHash { get; set; }
         }
 
+        //Game class - synced with API game class
         public class ServerGame
         {
             public string? Id { get; set; }
@@ -111,6 +119,8 @@ namespace ChessAIApp
             public string? ClientId { get; set; }
             public DateTime LastModified { get; set; }
         }
+
+        //When window is closed - save everything then exit
         protected override async void OnClosing(System.ComponentModel.CancelEventArgs e)
         {
             base.OnClosing(e);
@@ -123,8 +133,9 @@ namespace ChessAIApp
             {
                 MessageBox.Show("Error during exit sync: " + ex.Message);
             }
-        }
+        } 
 
+        //Button & other UI handlers
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             SettingsPopup.IsOpen = true;
@@ -148,7 +159,8 @@ namespace ChessAIApp
                 await UpdatePreferences();
             }
         }
-
+        
+        //Handler for the move selection from the table
         private void MoveCell_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button btn)
@@ -171,7 +183,8 @@ namespace ChessAIApp
                 }
             }
         }
-
+        
+        //Undo/Redo handlers
         private void FullyUndo_Click(object sender, RoutedEventArgs e)
         {
             if (sender is Button _ && MoveHistory.GetLength() > 0)
@@ -217,6 +230,8 @@ namespace ChessAIApp
                 chessBoard?.HighlightSquare(end);
             }
         }
+
+        //Menu button handlers
         private void Play_Click(object sender, RoutedEventArgs e)
         {
             MenuView.Visibility = Visibility.Collapsed;
@@ -228,6 +243,7 @@ namespace ChessAIApp
             Application.Current.Shutdown();
         }
 
+        //Game start menu handlers
         private void SelectBot_Click(object sender, RoutedEventArgs e)
         {
             // Reset all bot buttons
@@ -274,14 +290,17 @@ namespace ChessAIApp
             selectedDifficulty = rb?.Content.ToString();
         }
 
+        //Start game button
         private void StartGame_Click(object sender, RoutedEventArgs e)
         {
+            //Warn if bot not selected
             if (selectedBot == null)
             {
                 MessageBox.Show("Please select a bot first.");
                 return;
             }
 
+            //Change app view to game mode
             BotSelectView.Visibility = Visibility.Collapsed;
             GameView.Visibility = Visibility.Visible;
 
@@ -289,6 +308,7 @@ namespace ChessAIApp
             BottomControls.Visibility = Visibility.Visible;
             BackButton.Visibility = Visibility.Collapsed;
 
+            //Apply selections and start game
             if (chessBoard != null && currentUser != null)
             {
                 chessBoard.ResetGame(currentUser, true);
@@ -339,6 +359,7 @@ namespace ChessAIApp
 
                 chessBoard.selectedDifficulty = selectedDifficulty;
 
+                //Create new json file and save the game to there
                 string folder = System.IO.Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                     $"ChessGames/{currentUser}"
@@ -363,6 +384,8 @@ namespace ChessAIApp
                 _ = chessBoard.Play();
             }
         }
+
+        //Other button handlers
         private void BackToMenu_Click(object sender, RoutedEventArgs e)
         {
             BotSelectView.Visibility = Visibility.Collapsed;
@@ -403,7 +426,8 @@ namespace ChessAIApp
                 chessBoard.currentGamePath = null;
             }
         }
-
+        
+        //Game end screen handlers
         private async void EndScreen(string text, string reasonText)
         {
             WinnerText.Text = text;
@@ -433,6 +457,7 @@ namespace ChessAIApp
             MenuView.Visibility = Visibility.Visible;
         }
 
+        //Undo last played move handler
         private void UndoMove_Click(object sender, RoutedEventArgs e)
         {
             if (chessBoard != null)
@@ -442,13 +467,17 @@ namespace ChessAIApp
             }
         }
 
+        //Return to profile from viewing a game
         private void BackToProfile_Click(object sender, RoutedEventArgs e)
         {
             GameView.Visibility = Visibility.Collapsed;
             ProfileView.Visibility = Visibility.Visible;
         }
+
+        //Load last unfinished game
         private void LoadLastUnfinishedGame()
         {
+            //Get user folder
             string folder = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 $"ChessGames/{currentUser}"
@@ -457,12 +486,14 @@ namespace ChessAIApp
             if (!System.IO.Directory.Exists(folder))
                 return;
 
+            //Check for an unfinished game in the folder
             var files = System.IO.Directory.GetFiles(folder, "*.json");
 
             foreach (var file in files)
             {
                 var game = MoveHistory.LoadGame(file);
-
+                
+                //Load game if is unfinished
                 if (game != null && !game.IsFinished)
                 {
                     if (game.Moves.Count == 0) continue;
@@ -474,10 +505,12 @@ namespace ChessAIApp
                     foreach (var move in game.Moves)
                         MoveHistory.Add(move);
 
+                    //Apply the game bot, difficulty and player color
                     selectedBot = game.BotName;
                     selectedDifficulty = game.Difficulty;
                     selectedColor = game.PlayerColor;
 
+                    //Apply the game
                     ApplyLoadedGame();
 
                     return;
@@ -485,6 +518,7 @@ namespace ChessAIApp
             }
         }
 
+        //Load game from a given filepath
         private void LoadGameFromFile(string? path)
         {
             if (string.IsNullOrEmpty(path)) return;
@@ -546,18 +580,22 @@ namespace ChessAIApp
             }
         }
 
+        //Apply the loaded game
         private void ApplyLoadedGame()
         {
+            //Change UI to game mode
             MenuView.Visibility = Visibility.Collapsed;
             BotSelectView.Visibility = Visibility.Collapsed;
             GameView.Visibility = Visibility.Visible;
             ResignControl.Visibility = Visibility.Visible;
 
+
+            //Apply the game parameters and restore move history
             if (chessBoard == null || loadedGame == null)
                 return;
 
             chessBoard.SetGame(new ChessGame(loadedGame.Moves[loadedGame.Moves.Count - 1].BlackFen ?? loadedGame.Moves[loadedGame.Moves.Count - 1].WhiteFen));
-
+            
             if (loadedGame.BotName == "Random Bot")
                 chessBoard.SetBotOne(new RandomBot(chessBoard));
             else if (loadedGame.BotName == "Easy Bot")
@@ -583,6 +621,7 @@ namespace ChessAIApp
             _ = chessBoard.Play();
         }
 
+        //Game Summary class used for game info display
         public class GameSummary
         {
             public string? FilePath { get; set; }
@@ -611,7 +650,7 @@ namespace ChessAIApp
         }
 
 
-
+        //Profile Stats class used for profile info display
         public class ProfileStats : INotifyPropertyChanged
         {
             public event PropertyChangedEventHandler? PropertyChanged;
@@ -711,6 +750,7 @@ namespace ChessAIApp
                 set { _age = value; OnPropertyChanged(); }
             }
 
+            //Calculatin win/loss/draw percentages for barchart display
             private int _wins;
             public int Wins
             {
@@ -737,6 +777,7 @@ namespace ChessAIApp
             public double DrawPercent => TotalGames == 0 ? 0 : (double)Draws / TotalGames * 100;
             public double LossPercent => TotalGames == 0 ? 0 : (double)Losses / TotalGames * 100;
 
+            //Corner radius calculations based on win/loss/draw percentages to give the bar a rounded look
             public CornerRadius WinCorner
             {
                 get
@@ -802,6 +843,8 @@ namespace ChessAIApp
                 }
             }
         }
+
+        //Load user profile
         private void LoadProfile()
         {
             var games = new List<GameSummary>();
@@ -824,6 +867,7 @@ namespace ChessAIApp
             List<string> whiteOpenerMoves = new List<string>();
             List<string> blackOpenerMoves = new List<string>();
 
+            //Loop though all of the games of a user and calcluate all the stats
             foreach (var file in System.IO.Directory.GetFiles(folder, "*.json"))
             {
                 var json = System.IO.File.ReadAllText(file);
@@ -906,6 +950,7 @@ namespace ChessAIApp
             ProfileView.DataContext = profileStats;
         }
 
+        //Mode function to find the favourite opener moves
         static string? Mode(IEnumerable<string>? values)
         {
             if (values == null) return null;
@@ -923,12 +968,14 @@ namespace ChessAIApp
                 ? null
                 : counts.MaxBy(kv => kv.Value).Key;
         }
+
+        //Profile click handlers
         private void Profile_Click(object sender, RoutedEventArgs e)
         {
             MenuView.Visibility = Visibility.Collapsed;
             ProfileView.Visibility = Visibility.Visible;
 
-            LoadProfile(); // IMPORTANT
+            LoadProfile();
         }
 
         private void BackFromProfile_Click(object sender, RoutedEventArgs e)
@@ -937,6 +984,7 @@ namespace ChessAIApp
             MenuView.Visibility = Visibility.Visible;
         }
 
+        //Game click handler to load the game
         private void Game_Click(object sender, MouseButtonEventArgs e)
         {
             if (sender is FrameworkElement fe && fe.DataContext is GameSummary game)
@@ -945,6 +993,7 @@ namespace ChessAIApp
             }
         }
 
+        //Login/Logout/Signup click handlers
         private async void Login_Click(object sender, RoutedEventArgs e)
         {
             var username = UsernameBox.Text;
@@ -958,14 +1007,13 @@ namespace ChessAIApp
                 PasswordHash = password
             });
 
-
-
             if (response.IsSuccessStatusCode)
             {
                 var userData = await response.Content.ReadFromJsonAsync<User>();
 
                 currentUser = username;
 
+                //Change UI view to menu
                 AuthView.Visibility = Visibility.Collapsed;
                 MenuView.Visibility = Visibility.Visible;
 
@@ -973,11 +1021,13 @@ namespace ChessAIApp
 
                 chessBoard = new Board(ChessBoardGrid, ArrowLayer, DragLayer, MovesTable, PromotionLayer, EndScreen);
 
+                //Load users last unfinished game
                 LoadLastUnfinishedGame();
 
                 MovesTable.ItemsSource = MoveHistory.MoveList;
                 chessBoard.BuildBoard();
 
+                //Apply user preferrences
                 if (userData != null)
                 {
                     PieceSetCombo.SelectedItem = userData.PieceSet;
@@ -989,6 +1039,7 @@ namespace ChessAIApp
                         ThemeManager.LoadTheme(userData.Theme);
                     }
                 }
+                //Update board and sync games
                 chessBoard?.UpdateBoard(chessBoard.GetGame());
 
                 await SyncGames();
@@ -998,9 +1049,10 @@ namespace ChessAIApp
                 AuthStatus.Text = "Username or Password is Incorrect";
             }
         }
-
+    
         private async void Logout_Click(object sender, RoutedEventArgs e)
         {
+            //Reset UI and credentials
             PasswordBox.Password = "";
             UsernameBox.Text = "";
             AuthView.Visibility = Visibility.Visible;
@@ -1009,6 +1061,7 @@ namespace ChessAIApp
 
         private async void Signup_Click(object sender, RoutedEventArgs e)
         {
+            //Post the new user - with default preferences
             var response = await http.PostAsJsonAsync("api/auth/signup", new
             {
                 Username = UsernameBox.Text,
@@ -1022,10 +1075,12 @@ namespace ChessAIApp
                 : "Signup failed";
         }
 
+        //Function to update user preferences
         private async Task UpdatePreferences()
         {
             var user = currentUser;
 
+            //Post the new preferences
             await http.PutAsJsonAsync(
                 $"api/auth/{user}/preferences",
                 new
@@ -1037,10 +1092,12 @@ namespace ChessAIApp
                 });
         }
 
+        //Function to sync users games folder with the DB
         private async Task SyncGames()
         {
             if (currentUser == null) return;
 
+            //Create user folder if not present
             string folder = System.IO.Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 $"ChessGames/{currentUser}"
@@ -1048,7 +1105,7 @@ namespace ChessAIApp
 
             System.IO.Directory.CreateDirectory(folder);
 
-            // 🔼 Upload local games
+            //Upload local games
             foreach (var file in System.IO.Directory.GetFiles(folder, "*.json"))
             {
                 var json = await System.IO.File.ReadAllTextAsync(file);
@@ -1064,7 +1121,7 @@ namespace ChessAIApp
                 await http.PostAsJsonAsync("api/game/save", game);
             }
 
-            // 🔽 Download from server
+            //Download games from DB
             var response = await http.GetAsync($"api/game/sync/{currentUser}");
 
             if (!response.IsSuccessStatusCode) return;
@@ -1096,7 +1153,9 @@ namespace ChessAIApp
                 }
         }
     }
+    
 
+    //Percent to Grid length Conerter for win% barchart
     public class PercentToGridLengthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -1109,4 +1168,3 @@ namespace ChessAIApp
     }
 
 }
-//mongodb+srv://davogevo0416_db_user:<ZwwX186lwat7XQcD>@cluster0.erdoqgh.mongodb.net/?appName=Cluster0
