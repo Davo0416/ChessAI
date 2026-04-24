@@ -3,7 +3,6 @@ using ChessAIWebAPI.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddSingleton<MongoService>();
 builder.Services.AddEndpointsApiExplorer();
@@ -27,4 +26,5 @@ app.MapControllers();
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Urls.Add($"http://0.0.0.0:{port}");
 
+//Run it
 app.Run();

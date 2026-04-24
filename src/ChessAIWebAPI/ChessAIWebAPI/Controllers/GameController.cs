@@ -32,7 +32,8 @@
 
             return Ok();
         }
-
+        
+        //SYNC PLAYERS GAMES 
         [HttpGet("sync/{username}")]
         public async Task<IActionResult> Sync(string username, DateTime? lastSync)
         {
@@ -48,6 +49,7 @@
             return Ok(games);
         }
 
+        //GET ALL GAMES
         [HttpGet("all")]
         public async Task<IActionResult> GetAll()
         {
@@ -55,6 +57,7 @@
             return Ok(games);
         }
 
+        //DELETE USER GAMES
         [HttpDelete("clear/{username}")]
         public async Task<IActionResult> ClearUserGames(string username)
         {
