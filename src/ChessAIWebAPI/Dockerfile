@@ -2,6 +2,9 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
 COPY . .
+
+WORKDIR /src/src/ChessAIWebAPI
+
 RUN dotnet restore
 RUN dotnet publish ChessAIWebAPI.csproj -c Release -o /app/publish
 
