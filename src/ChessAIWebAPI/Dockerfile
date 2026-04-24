@@ -3,7 +3,7 @@ WORKDIR /src
 
 COPY . .
 
-WORKDIR /src/src/ChessAIWebAPI
+WORKDIR /src/ChessAIWebAPI
 
 RUN dotnet restore
 RUN dotnet publish ChessAIWebAPI.csproj -c Release -o /app/publish
