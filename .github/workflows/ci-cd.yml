@@ -3,6 +3,8 @@ name: CI/CD Pipeline
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - 'v*'
   pull_request:
 
 jobs:
@@ -58,15 +60,16 @@ jobs:
     - name: Publish API
       run: dotnet publish ./src/ChessAIWebAPI -c Release -o publish/api
 
-    - name: Publish WPF
-      run: dotnet publish ./src/ChessAIApp -c Release -o publish/wpf
+    - name: Publish WPF (single file exe)
+      run: dotnet publish ./src/ChessAIApp/ChessAIApp.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o publish/wpf
 
-    # =========================
-    # ARTIFACTS
-    # =========================
+    - name: Zip WPF app
+      run: Compress-Archive -Path publish/wpf/* -DestinationPath ChessAIApp.zip
 
-    - name: Upload artifacts
-      uses: actions/upload-artifact@v4
+    - name: Create Release
+      if: startsWith(github.ref, 'refs/tags/')
+      uses: softprops/action-gh-release@v2
       with:
-        name: app-build
-        path: publish/
+        files: ChessAIApp.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
