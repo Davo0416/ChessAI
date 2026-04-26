@@ -136,6 +136,20 @@ namespace ChessAIApp
         } 
 
         //Button & other UI handlers
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left)
+            {
+                Undo_Click(this, null);
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Right)
+            {
+                Redo_Click(this, null);
+                e.Handled = true;
+            }
+        }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             SettingsPopup.IsOpen = true;
@@ -198,7 +212,7 @@ namespace ChessAIApp
         }
         private void Undo_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button _ && MoveHistory.GetLength() > 0)
+            if (MoveHistory.GetLength() > 0)
             {
                 MoveHistory.SelectPrevious();
                 chessBoard?.ShowPosition(MoveHistory.GetSelectedFen());
@@ -221,7 +235,7 @@ namespace ChessAIApp
         }
         private void Redo_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button _ && MoveHistory.GetLength() > 0)
+            if (MoveHistory.GetLength() > 0)
             {
                 MoveHistory.SelectNext();
                 chessBoard?.ShowPosition(MoveHistory.GetSelectedFen());

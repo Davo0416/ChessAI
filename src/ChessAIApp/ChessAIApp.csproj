@@ -12,6 +12,5 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="SharpVectors.Wpf" Version="1.8.5" />
     <Resource Include="Resources\Pieces\*\*.png" />
-    <Resource Include="Resources\Icons\*.png" />
   </ItemGroup>
 </Project>

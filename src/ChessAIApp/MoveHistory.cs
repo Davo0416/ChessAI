@@ -153,7 +153,7 @@ namespace ChessAIApp
       if (selectedMove.BlackFen != null)
         return (selectedMove.BlackSquares.Start.ToPoint(), selectedMove.BlackSquares.End.ToPoint());
 
-      return (new Point(0, 0), new Point(0, 0));
+      return (new Point(-1, -1), new Point(-1, -1));
     }
 
     //Select a move with the given row & column
@@ -210,6 +210,8 @@ namespace ChessAIApp
       }
 
       currentSelectedRowIndex = Math.Clamp(currentSelectedRowIndex, 0, GetLength() - 1);
+      if(GetMoveEntry(currentSelectedRowIndex).BlackFen == null)
+        currentSelectedColumnIndex = 0;
     }
 
     //Save game info to a json file with the given path

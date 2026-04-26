@@ -9,8 +9,8 @@
         WindowState="Maximized"
         Height="450"
         Width="800"
-        Background="#302E2B">
-
+        Background="#302E2B"
+        PreviewKeyDown="Window_KeyDown">
     <Window.Resources>
         <local:PercentToGridLengthConverter x:Key="PercentToGridLengthConverter"/>
         <Style x:Key="RoundedButtonStyle"

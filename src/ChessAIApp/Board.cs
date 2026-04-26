@@ -348,7 +348,7 @@ namespace ChessAIApp
       var pos = e.GetPosition(boardGrid);
 
       HitTestResult result = VisualTreeHelper.HitTest(boardGrid, pos);
-      if (result == null)
+      if (result == null || Loaded)
       {
         dragLayer.Children.Remove(_draggedPiece);
         _originalParent?.Children.Add(_draggedPiece);
@@ -385,16 +385,16 @@ namespace ChessAIApp
       Point toSquare = new Point(MathF.Round((float)pos.Y / 75), MathF.Round((float)pos.X / 75));
 
       Move move = Utils.SquaresToMove(fromSquare, toSquare, game);
-
       if (currentView == Player.Black)
         move = InvertMove(move);
 
       //If is a promotion - show promotion overlay
-      if (IsPromotionMove(move) && (game.IsValidMove(move) || Utils.IsPseoudoLegal(move, premoveBoard, game, kingMoved)))
+      if (IsPromotionMove(move) && !Loaded && (game.IsValidMove(move) || Utils.IsPseoudoLegal(move, premoveBoard, game, kingMoved)))
       {
         ShowPromotionOverlay(move);
         return;
       }
+
       if (targetSquare != null && currentView == Utils.MoveToPlayer(move, premoveBoard))
       {
         //Check if move is legal
@@ -740,7 +740,10 @@ namespace ChessAIApp
       MoveHistory.Clear();
 
       InvertBoardDisplay();
-      BuildBoard();
+
+      premoveBoard = null;
+      viewBoard = null;
+      UpdateBoard(game);
 
       //Finalize inverting player colors
       if (invertColors)
