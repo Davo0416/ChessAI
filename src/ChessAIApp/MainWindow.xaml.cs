@@ -240,6 +240,7 @@ namespace ChessAIApp
                 MoveHistory.SelectNext();
                 chessBoard?.ShowPosition(MoveHistory.GetSelectedFen());
                 (Point start, Point end) = MoveHistory.GetSelectedHighlights();
+                
                 chessBoard?.HighlightSquare(start);
                 chessBoard?.HighlightSquare(end);
             }
@@ -411,7 +412,7 @@ namespace ChessAIApp
             if (chessBoard != null)
             {
                 Quasarv01 Quasarv01 = new Quasarv01(chessBoard);
-                Move? hint = Quasarv01.Evaluate(4);
+                Move? hint = Quasarv01.Evaluate(3);
                 (Point fromSquare, Point toSquare) = Utils.MoveToSquares(hint);
                 chessBoard.DrawHintArrow(fromSquare, toSquare);
             }
