@@ -6,7 +6,6 @@ using ChessAIApp;
 
 public class BotTests
 {
-
     private static ChessGame CreateGame()
     {
         return new ChessGame(); // starting position
@@ -14,7 +13,7 @@ public class BotTests
 
     private static Board CreateBoard()
     {
-        return new Board(null!, null!, null!, null!, null!, null!); // NOT used in logic tests
+        return new Board(null!, null!, null!, null!, null!, null!);
     }
 
     // -----------------------------
@@ -80,6 +79,7 @@ public class BotTests
             .Invoke(bot, new object[] { game });
 
         Assert.NotNull(score);
+        Assert.True(float.IsFinite((float)score));
     }
 
     [Fact]
@@ -105,8 +105,25 @@ public class BotTests
 
         var result = typeof(Quasarv01)
             .GetMethod("Negamax", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
-            .Invoke(bot, new object[] { game, 2, float.NegativeInfinity, float.PositiveInfinity });
+            .Invoke(bot, new object[] { game, 2, float.NegativeInfinity, float.PositiveInfinity, 0 });
 
         Assert.NotNull(result);
+        Assert.True(float.IsFinite((float)result));
+    }
+
+    [Fact]
+    public void QuasarV01_QuiescenceSearch_ShouldReturnFiniteValue()
+    {
+        var game = CreateGame();
+        var board = CreateBoard();
+
+        var bot = new Quasarv01(board);
+
+        var result = typeof(Quasarv01)
+            .GetMethod("QuiescenceSearch", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)!
+            .Invoke(bot, new object[] { game, float.NegativeInfinity, float.PositiveInfinity, 6 });
+
+        Assert.NotNull(result);
+        Assert.True(float.IsFinite((float)result));
     }
 }
