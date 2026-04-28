@@ -149,6 +149,16 @@ namespace ChessAIApp
                 Redo_Click(this, null);
                 e.Handled = true;
             }
+            else if (e.Key == Key.Up)
+            {
+                FullyRedo_Click(this, null);
+                e.Handled = true;
+            }
+            else if (e.Key == Key.Down)
+            {
+                FullyUndo_Click(this, null);
+                e.Handled = true;
+            }
         }
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
@@ -201,7 +211,7 @@ namespace ChessAIApp
         //Undo/Redo handlers
         private void FullyUndo_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button _ && MoveHistory.GetLength() > 0)
+            if (MoveHistory.GetLength() > 0)
             {
                 MoveHistory.SelectFirst();
                 chessBoard?.ShowPosition(MoveHistory.GetSelectedFen());
@@ -224,7 +234,7 @@ namespace ChessAIApp
 
         private void FullyRedo_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button _ && MoveHistory.GetLength() > 0)
+            if (MoveHistory.GetLength() > 0)
             {
                 MoveHistory.SelectLast();
                 chessBoard?.ShowPosition(MoveHistory.GetSelectedFen());
@@ -412,7 +422,7 @@ namespace ChessAIApp
             if (chessBoard != null)
             {
                 Quasarv01 Quasarv01 = new Quasarv01(chessBoard);
-                Move? hint = Quasarv01.Evaluate(3);
+                Move? hint = Quasarv01.Evaluate(4);
                 (Point fromSquare, Point toSquare) = Utils.MoveToSquares(hint);
                 chessBoard.DrawHintArrow(fromSquare, toSquare);
             }
