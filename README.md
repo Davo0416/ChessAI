@@ -201,7 +201,5 @@ GitHub Actions automatically builds the application, runs all unit tests, publis
 - Multiplayer gameplay
 - Chess clock and time controls
 - PGN import/export
-- Game analysis using Stockfish
-- Elo rating system
+- Game analysis using the built in chess engines
 - Puzzle and training mode
-- Cross-platform support using .NET MAUI
