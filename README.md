@@ -179,10 +179,9 @@ Below are screenshots of the main sections of the application.
 The project includes automated unit tests covering:
 
 - Chess AI evaluation
-- Overlay rendering
-- Highlight management
-- Arrow drawing
-- Utility functions
+- Overlay rendering testing
+- Highlight & Arrow testing
+- UI testing
 
 Run the tests using:
 
